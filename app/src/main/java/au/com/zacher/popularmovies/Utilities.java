@@ -43,4 +43,11 @@ public class Utilities {
                     }
                 });
     }
+
+    /**
+     * Gets the api key
+     */
+    public static String getApiKey(Context context) {
+        return context.getResources().getString(R.string.api_key);
+    }
 }
