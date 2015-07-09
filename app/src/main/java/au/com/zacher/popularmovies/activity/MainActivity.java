@@ -1,7 +1,9 @@
 package au.com.zacher.popularmovies.activity;
 
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +12,7 @@ import au.com.zacher.popularmovies.ActivityInitialiser;
 import au.com.zacher.popularmovies.Logger;
 import au.com.zacher.popularmovies.R;
 import au.com.zacher.popularmovies.ToolbarOptions;
+import au.com.zacher.popularmovies.adapter.DisplayItemGridAdapter;
 
 
 public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener {
@@ -25,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         ToolbarOptions options = new ToolbarOptions();
         options.enableUpButton = false;
         ActivityInitialiser.initActivity(options, savedInstanceState, this, R.layout.activity_main);
+
+        RecyclerView recyclerView = (RecyclerView)this.findViewById(R.id.movie_grid);
+        recyclerView.setHasFixedSize(true);
     }
 
     @Override
