@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="progress_bar" />
+    <item type="id" name="no_results_text" />
+    <item type="id" name="toolbar" />
+</resources>
