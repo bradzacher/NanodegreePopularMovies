@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                xmlns:recyclerview="http://schemas.android.com/apk/re/android.support.v7.recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:context="au.com.zacher.popularmovies.MainActivity">
@@ -8,7 +9,7 @@
         android:id="@+id/movie_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layoutManager="android.support.v7.widget.GridLayoutManager"
-        android:spanCount="2" />
+        recyclerview:layoutManager="android.support.v7.widget.GridLayoutManager"
+        recyclerview:spanCount="2" />
 
 </RelativeLayout>

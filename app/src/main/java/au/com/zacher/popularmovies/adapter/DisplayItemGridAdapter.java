@@ -84,7 +84,7 @@ public abstract class DisplayItemGridAdapter<T> extends ArrayAdapter<DisplayItem
         // use ViewHolder pattern to speedup performance
         final DisplayItemViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_display_item, parent, false);
+            convertView = LayoutInflater.from(this.getContext()).inflate(R.layout.fragment_display_item, parent, false);
             holder = new DisplayItemViewHolder(convertView);
             holder.title = (TextView)convertView.findViewById(R.id.title);
             holder.subtitle = (TextView)convertView.findViewById(R.id.subtitle);

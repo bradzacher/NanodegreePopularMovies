@@ -7,5 +7,6 @@ package au.com.zacher.popularmovies;
 public class ToolbarOptions {
     public ToolbarOptions() { }
 
+    @SuppressWarnings("RedundantFieldInitialization")
     public boolean enableUpButton = false;
 }

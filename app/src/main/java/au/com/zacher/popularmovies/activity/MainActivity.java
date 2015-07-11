@@ -1,6 +1,5 @@
 package au.com.zacher.popularmovies.activity;
 
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -12,17 +11,22 @@ import au.com.zacher.popularmovies.ActivityInitialiser;
 import au.com.zacher.popularmovies.Logger;
 import au.com.zacher.popularmovies.R;
 import au.com.zacher.popularmovies.ToolbarOptions;
-import au.com.zacher.popularmovies.adapter.DisplayItemGridAdapter;
+import au.com.zacher.popularmovies.api.Configuration;
+import au.com.zacher.popularmovies.contract.ConfigurationContract;
+import au.com.zacher.popularmovies.contract.MovieContract;
+import au.com.zacher.popularmovies.model.SimpleMovie;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Logger.setContext(getApplicationContext());
+        Logger.setContext(this.getApplicationContext());
         Logger.logActionCreate("MainActivity");
         super.onCreate(savedInstanceState);
-
 
         // setup the toolbar and contentView
         ToolbarOptions options = new ToolbarOptions();
@@ -31,12 +35,35 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
         RecyclerView recyclerView = (RecyclerView)this.findViewById(R.id.movie_grid);
         recyclerView.setHasFixedSize(true);
+
+        ConfigurationContract.initialConfigLoad(new Callback<Configuration>() {
+            @Override
+            public void success(Configuration configuration, Response response) {
+                // TODO: trigger load of movies
+                MovieContract.getPopular(new Callback<SimpleMovie[]>() {
+                    @Override
+                    public void success(SimpleMovie[] movies, Response response) {
+                        // TODO: hide loading screen, put array into adapter
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        // TODO: display error message
+                    }
+                });
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                // TODO: display error message
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.getMenuInflater().inflate(R.menu.menu_main, menu);
 
         return true;
     }

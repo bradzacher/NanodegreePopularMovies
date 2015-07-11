@@ -14,9 +14,7 @@ import android.view.View;
 /**
  * Created by Brad on 22/06/2015.
  */
-public class ActivityInitialiser {
-    private ActivityInitialiser() { }
-
+public final class ActivityInitialiser {
     /**
      * Sets up the view and toolbar
      * @param options the options to use to build the toolbar

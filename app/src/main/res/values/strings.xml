@@ -12,7 +12,7 @@
     <string name="log_onCreate_formatter" translatable="false">Created Activity: "%1$s"</string>
     <string name="log_method_call_formatter" translatable="false">Called Method: "%1$s" on class "%2$s"</string>
     <string name="log_wtf" translatable="false">This should never happen</string>
-    <string name="log_api_error" translatable="false">Spotify API Error:
+    <string name="log_api_error" translatable="false">TheMovieDb API Error:
     URL: %1$s
     STATUS: %2$s
     MESSAGE: %3$s</string>
