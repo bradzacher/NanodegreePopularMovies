@@ -3,4 +3,8 @@
     <item type="id" name="progress_bar" />
     <item type="id" name="no_results_text" />
     <item type="id" name="toolbar" />
+
+    <item type="id" name="display_item_title" />
+    <item type="id" name="display_item_subtitle" />
+    <item type="id" name="display_item_image" />
 </resources>

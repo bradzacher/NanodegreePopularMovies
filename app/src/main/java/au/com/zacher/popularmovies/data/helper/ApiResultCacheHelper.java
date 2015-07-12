@@ -1,13 +1,8 @@
 package au.com.zacher.popularmovies.data.helper;
 
-import android.app.Application;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.Collection;
 import java.util.Date;
@@ -15,14 +10,13 @@ import java.util.Date;
 import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.data.DbColumn;
 import au.com.zacher.popularmovies.data.entry.ApiResultCacheEntry;
-import au.com.zacher.popularmovies.model.ApiResultCacheItem;
 
 /**
  * Created by Brad on 11/07/2015.
  */
 public class ApiResultCacheHelper extends DbHelper {
     public ApiResultCacheHelper() {
-        super(new Application());
+        super(Utilities.getApplicationContext());
     }
 
     public void add(String type, Object obj) {
@@ -77,7 +71,6 @@ public class ApiResultCacheHelper extends DbHelper {
         } finally {
             db.endTransaction();
         }
-        db.close();
 
         return result;
     }

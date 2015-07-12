@@ -9,6 +9,8 @@ import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
 import au.com.zacher.popularmovies.model.SimpleMovie;
 import au.com.zacher.popularmovies.sync.SyncAdapter;
 import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Brad on 10/07/2015.
@@ -16,29 +18,50 @@ import retrofit.Callback;
 public final class MovieContract {
     public static final String POPULAR_MOVIES_TYPE = "popular_movies";
 
-    public static void getPopular(final Callback<SimpleMovie[]> callback) {
-        if (Utilities.isConnected()) {
-            Utilities.triggerSync(SyncAdapter.POPULAR_MOVIES_SYNC, new SyncStatusObserver() {
-                @Override
-                public void onStatusChanged(int which) {
-                    loadFromProvider(callback);
+    public static void getPopularMovies(final ContractCallback<SimpleMovie[]> callback) {
+        // attempt to load from the provider first
+        loadFromProvider(new ContractCallback<SimpleMovie[]>() {
+            @Override
+            public void success(SimpleMovie[] simpleMovies) {
+                callback.success(simpleMovies);
+            }
+
+            @Override
+            public void failure(Exception error) {
+                // attempt to force a sync
+                if (Utilities.isConnected()) {
+                    SyncAdapter.immediateSync(SyncAdapter.POPULAR_MOVIES_SYNC, new ContractCallback<Boolean>() {
+                        @Override
+                        public void success(Boolean result) {
+                            loadFromProvider(callback);
+                        }
+
+                        @Override
+                        public void failure(Exception e) {
+                            callback.failure(e);
+                        }
+                    });
+                } else {
+                    callback.failure(error);
                 }
-            });
-        } else {
-            loadFromProvider(callback);
-        }
+            }
+        });
     }
 
-    private static void loadFromProvider(Callback<SimpleMovie[]> callback) {
+    private static void loadFromProvider(ContractCallback<SimpleMovie[]> callback) {
         ApiResultCacheHelper provider = new ApiResultCacheHelper();
-        Cursor cur = provider.get(POPULAR_MOVIES_TYPE);
+        Cursor cursor = provider.get(POPULAR_MOVIES_TYPE);
 
-        if (cur.getCount() == 0) {
-            callback.failure(null);
+        if (cursor == null || cursor.getCount() == 0) {
+            callback.failure(new Exception("No data in provider"));
             return;
         }
+        cursor.moveToFirst();
 
-        SimpleMovie[] results = (SimpleMovie[])ApiResultCacheEntry.getObjectFromRow(cur, SimpleMovie[].class);
-        callback.success(results, null);
+        SimpleMovie[] results = (SimpleMovie[])ApiResultCacheEntry.getObjectFromRow(cursor, SimpleMovie[].class);
+
+        cursor.close();
+
+        callback.success(results);
     }
 }

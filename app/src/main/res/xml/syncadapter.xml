@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sync-adapter
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:contentAuthority="au.com.zacher.popularmovies"
-    android:accountType="au.com.zacher.popularmovies.sync.Authenticator"
+    android:contentAuthority="@string/provider_authority"
+    android:accountType="@string/provider_authority"
     android:userVisible="false"
     android:supportsUploading="false"
     android:allowParallelSyncs="false"

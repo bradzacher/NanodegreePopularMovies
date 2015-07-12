@@ -12,6 +12,8 @@ import au.com.zacher.popularmovies.data.entry.ApiResultCacheEntry;
 import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
 import au.com.zacher.popularmovies.sync.SyncAdapter;
 import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Brad on 10/07/2015.
@@ -20,41 +22,56 @@ public final class ConfigurationContract {
     private static Configuration instance;
     public static final String TYPE = "configuration";
 
-    public static Configuration getConfiguration() {
+    public static Configuration getInstance() {
         return instance;
     }
 
     /**
      * Loads the config from the internet, or from the DB if required
      */
-    public static void initialConfigLoad(final Callback<Configuration> callback) {
-        if (Utilities.isConnected() && instance == null) {
-            Utilities.triggerSync(SyncAdapter.CONFIGURATION_SYNC, new SyncStatusObserver() {
-                @Override
-                public void onStatusChanged(int which) {
-                    loadConfigFromProvider(callback);
+    public static void getConfig(final ContractCallback<Configuration> callback) {
+        loadConfigFromProvider(new ContractCallback<Configuration>() {
+            @Override
+            public void success(Configuration configuration) {
+                callback.success(configuration);
+            }
+
+            @Override
+            public void failure(Exception error) {
+                if (Utilities.isConnected() && instance == null) {
+                    SyncAdapter.immediateSync(SyncAdapter.CONFIGURATION_SYNC, new ContractCallback<Boolean>() {
+                        @Override
+                        public void success(Boolean result) {
+                            loadConfigFromProvider(callback);
+                        }
+
+                        @Override
+                        public void failure(Exception e) {
+                            callback.failure(e);
+                        }
+                    });
+                } else {
+                    callback.failure(new Exception("No internet connection"));
                 }
-            });
-        } else {
-            loadConfigFromProvider(callback);
-        }
+            }
+        });
     }
 
-    private static void loadConfigFromProvider(Callback<Configuration> callback) {
+    private static void loadConfigFromProvider(ContractCallback<Configuration> callback) {
         if (instance == null) {
             ApiResultCacheHelper db = new ApiResultCacheHelper();
             Cursor cursor = db.get(TYPE);
 
-            if (cursor == null) {
-                callback.failure(null);
+            if (cursor == null || cursor.getCount() == 0) {
+                callback.failure(new Exception("No data in provider"));
                 return;
             }
             cursor.moveToFirst();
 
-            Gson gson = new Gson();
-            instance = gson.fromJson(cursor.getString(cursor.getColumnIndex(ApiResultCacheEntry.COLUMN_JSON.name)), Configuration.class);
+            instance = (Configuration)ApiResultCacheEntry.getObjectFromRow(cursor, Configuration.class);
+
             cursor.close();
         }
-        callback.success(instance, null);
+        callback.success(instance);
     }
 }

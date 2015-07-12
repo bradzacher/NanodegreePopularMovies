@@ -1,15 +1,51 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                xmlns:recyclerview="http://schemas.android.com/apk/re/android.support.v7.recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="au.com.zacher.popularmovies.MainActivity">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="au.com.zacher.popularmovies.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/movie_grid"
+    <include layout="@layout/toolbar" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        recyclerview:layoutManager="android.support.v7.widget.GridLayoutManager"
-        recyclerview:spanCount="2" />
+        android:layout_height="match_parent">
 
-</RelativeLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/movie_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <ProgressBar android:id="@id/progress_bar"
+                     android:layout_height="48dp"
+                     android:layout_width="48dp"
+                     android:layout_gravity="center"
+                     android:layout_centerInParent="true" />
+
+        <LinearLayout
+            android:id="@+id/no_internet_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center_vertical|center_horizontal"
+            android:visibility="gone">
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/internet_error"
+                android:textSize="20sp"/>
+
+            <Button
+                android:id="@+id/retry_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/retry" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

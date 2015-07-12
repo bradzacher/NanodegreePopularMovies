@@ -6,15 +6,16 @@ import android.os.IBinder;
 
 /**
  * The service which allows the sync adapter framework to access the authenticator.
+ * from: https://developer.android.com/training/sync-adapters/creating-authenticator.html
  */
-public class AuthenticatorService extends Service {
+public class StubAuthenticatorService extends Service {
     // Instance field that stores the authenticator object
-    private Authenticator authenticator;
+    private StubAuthenticator stubAuthenticator;
 
     @Override
     public void onCreate() {
-        // Create a new authenticator object
-        this.authenticator = new Authenticator(this);
+        // Create a new stubAuthenticator object
+        this.stubAuthenticator = new StubAuthenticator(this);
     }
 
     /*
@@ -23,6 +24,6 @@ public class AuthenticatorService extends Service {
      */
     @Override
     public IBinder onBind(Intent intent) {
-        return this.authenticator.getIBinder();
+        return this.stubAuthenticator.getIBinder();
     }
 }

@@ -1,24 +1,18 @@
 package au.com.zacher.popularmovies;
 
-import android.content.Context;
 import android.util.Log;
 
 /**
  * Wrapper for the logger to simplify logging a little bit with string resources
  */
 public class Logger {
-    private static boolean VERBOSE = true;
+    public static boolean VERBOSE = true;
 
     static {
         // prevent accidental verbose logging in release
         if (!BuildConfig.DEBUG) {
             VERBOSE = false;
         }
-    }
-
-    private static Context appContext;
-    public static void setContext(Context appContext) {
-        Logger.appContext = appContext;
     }
 
     @SuppressWarnings("unused")
@@ -55,15 +49,15 @@ public class Logger {
     }
     @SuppressWarnings("unused")
     public static void wtf(int formatStringId, Throwable tr, Object... arguments) {
-        String tag = appContext.getString(R.string.log_tag);
-        String logStr = appContext.getString(formatStringId, arguments);
+        String tag = Utilities.getApplicationContext().getString(R.string.log_tag);
+        String logStr = Utilities.getApplicationContext().getString(formatStringId, arguments);
 
         Log.wtf(tag, logStr, tr);
     }
 
     private static void writeLog(int type, int formatStringId, Object... arguments) {
-        String tag = appContext.getString(R.string.log_tag);
-        String logStr = appContext.getString(formatStringId, arguments);
+        String tag = Utilities.getApplicationContext().getString(R.string.log_tag);
+        String logStr = Utilities.getApplicationContext().getString(formatStringId, arguments);
 
         Log.println(type, tag, logStr);
     }

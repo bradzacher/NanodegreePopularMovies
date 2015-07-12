@@ -5,20 +5,29 @@
 
     <!-- Main Activity String -->
     <string name="main_activity_item_placeholder">Loading...</string>
+    <string name="internet_error">Could not fetch data.</string>
+    <string name="retry">Retry</string>
 
     <!-- Logging strings -->
     <string name="log_tag" translatable="false">@string/app_name</string>
     <string name="log_search_formatter" translatable="false">Search string: "%1$s"</string>
     <string name="log_onCreate_formatter" translatable="false">Created Activity: "%1$s"</string>
     <string name="log_method_call_formatter" translatable="false">Called Method: "%1$s" on class "%2$s"</string>
+    <string name="log_sync_start" translatable="false">Triggered sync of: "%1$s"</string>
+    <string name="log_sync_end" translatable="false">Finished sync of: "%1$s"</string>
     <string name="log_wtf" translatable="false">This should never happen</string>
     <string name="log_api_error" translatable="false">TheMovieDb API Error:
     URL: %1$s
     STATUS: %2$s
     MESSAGE: %3$s</string>
+    <string name="log_account_add_error" translatable="false">There was an error adding the account for syncing.</string>
     <string name="log_image_load_error">Failed to load image: %1$s</string>
 
     <!-- Content Descriptions -->
     <string name="content_description_item">Item Image</string>
     <string name="content_description_movie">Movie Poster</string>
+
+    <!-- Sync Strings -->
+    <string name="provider_authority">au.com.zacher.popularmovies.provider</string>
+    <string name="provider_account_type">au.com.zacher.popularmovies</string>
 </resources>

@@ -4,6 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <!-- TODO set these to something sensible -->
-    <dimen name="fragment_image_width">100dp</dimen>
+    <dimen name="fragment_image_width">200dp</dimen>
     <dimen name="fragment_image_height">100dp</dimen>
 </resources>

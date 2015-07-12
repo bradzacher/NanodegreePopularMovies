@@ -3,7 +3,7 @@ package au.com.zacher.popularmovies.model;
 /**
  * Created by Brad on 11/07/2015.
  */
-public class Movie {
+public class Movie extends MovieBase {
     public String belongs_to_collection;
     public int budget;
     public Genre[] genres;

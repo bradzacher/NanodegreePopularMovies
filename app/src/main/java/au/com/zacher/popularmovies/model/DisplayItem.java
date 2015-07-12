@@ -1,5 +1,7 @@
 package au.com.zacher.popularmovies.model;
 
+import au.com.zacher.popularmovies.Utilities;
+
 /**
  * Created by Brad on 23/06/2015.
  */
@@ -13,6 +15,9 @@ public class DisplayItem {
         this(id, imageUrl, title, null);
     }
     public DisplayItem(String id, String imageUrl, String title, String subtitle) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
+        }
         this.id = id;
         this.imageUrl = imageUrl;
         this.title = title;
@@ -27,8 +32,8 @@ public class DisplayItem {
         DisplayItem another = (DisplayItem)obj;
 
         return this.id.equals(another.id) &&
-                this.imageUrl.equals(another.imageUrl) &&
-                this.title.equals(another.title) &&
-                this.subtitle.equals(another.subtitle);
+                Utilities.areEqual(this.imageUrl, another.imageUrl) &&
+                Utilities.areEqual(this.title, another.title) &&
+                Utilities.areEqual(this.subtitle, another.subtitle);
     }
 }

@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="au.com.zacher.popularmovies" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,8 +24,15 @@
             </intent-filter>
         </activity>
 
-        <service android:name="au.com.zacher.popularmovies.sync.AuthenticatorService"
-                 android:exported="false">
+        <!-- the stub provider -->
+        <provider
+            android:name="au.com.zacher.popularmovies.provider.StubProvider"
+            android:authorities="@string/provider_authority"
+            android:exported="false"
+            android:syncable="true"/>
+        <!-- the stub account -->
+        <service android:name="au.com.zacher.popularmovies.sync.StubAuthenticatorService"
+            ><!-- android:exported="false" -->
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -26,9 +40,11 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
+        <!-- sync service -->
         <service
             android:name="au.com.zacher.popularmovies.sync.SyncService"
-            android:exported="false">
+            android:exported="true"
+            android:process=":sync">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>

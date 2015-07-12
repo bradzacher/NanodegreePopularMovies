@@ -12,9 +12,9 @@ import android.os.Bundle;
  * of its methods
  * from https://developer.android.com/training/sync-adapters/creating-authenticator.html
  */
-public class Authenticator extends AbstractAccountAuthenticator {
+public class StubAuthenticator extends AbstractAccountAuthenticator {
     // Simple constructor
-    public Authenticator(Context context) {
+    public StubAuthenticator(Context context) {
         super(context);
     }
     // Editing properties is not supported

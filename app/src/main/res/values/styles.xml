@@ -1,8 +1,22 @@
 <resources>
+    <color name="primary_light">#3B7F5E</color>
+    <color name="primary">#56BA89</color>
+    <color name="primary_dark">#3B7F5E</color>
+    <color name="accent_light">#EEF8FC</color>
+    <color name="accent">#CFD8DC</color>
+    <color name="accent_dark">#787D7F</color>
+    <color name="alert_bad">#D50000</color>
+    <color name="alert_good">#64DD17</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
 
 </resources>

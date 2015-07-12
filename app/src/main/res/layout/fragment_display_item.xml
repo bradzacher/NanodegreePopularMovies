@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="64dp"
-              android:padding="8dp">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <!-- TODO: styling -->
     <ImageView
-        android:layout_width="@dimen/fragment_image_width"
-        android:layout_height="@dimen/fragment_image_height"
-        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@id/display_item_image"
         android:contentDescription="@string/content_description_item"
-        android:src="@drawable/ic_error_outline_black_48dp" />
+        android:src="@drawable/ic_error_outline_black_48dp"
+        android:layout_centerInParent="true" />
 
+    <!--
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:id="@+id/title"
+            android:id="@id/display_item_title"
             android:text="@string/main_activity_item_placeholder"
             android:textColor="#000000"
             android:paddingLeft="16dp" />
@@ -31,9 +33,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:id="@+id/subtitle"
+            android:id="@id/display_item_subtitle"
             android:text="@string/main_activity_item_placeholder"
             android:textColor="#000000"
             android:paddingLeft="16dp" />
     </LinearLayout>
-</LinearLayout>
+    -->
+</RelativeLayout>
