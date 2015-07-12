@@ -7,8 +7,12 @@ import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import au.com.zacher.popularmovies.Logger;
 import au.com.zacher.popularmovies.R;
+import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.api.Configuration;
 import au.com.zacher.popularmovies.api.TheMovieDbApi;
 import au.com.zacher.popularmovies.api.TheMovieDbService;
@@ -26,9 +30,11 @@ import retrofit.client.Response;
  * Created by Brad on 11/07/2015.
  */
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-    public static final String SYNC_TYPE_BUNDLE_KEY = "sync-type";
-    public static final int CONFIGURATION_SYNC = 0;
-    public static final int POPULAR_MOVIES_SYNC = 1;
+    public static final int SYNC_TYPE_CONFIGURATION = 0;
+    public static final int SYNC_TYPE_DISCOVER_MOVIES = 1;
+
+    public static final String KEY_SYNC_TYPE = "sync-type";
+    public static final String KEY_DISCOVER_FILTER = "discover-filter";
 
     public SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -39,13 +45,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        int type = extras.getInt(SYNC_TYPE_BUNDLE_KEY);
-        SyncAdapter.immediateSync(type, null);
+        int type = extras.getInt(KEY_SYNC_TYPE);
+        SyncAdapter.immediateSync(type, extras, null);
     }
 
-    public static void immediateSync(int type, final ContractCallback<Boolean> callback) {
+    public static void immediateSync(int type, Bundle extras, final ContractCallback<Boolean> callback) {
         switch (type) {
-            case CONFIGURATION_SYNC:
+            case SYNC_TYPE_CONFIGURATION:
             {
                 TheMovieDbApi<TheMovieDbService.ConfigurationService> api = new TheMovieDbApi<>(TheMovieDbService.ConfigurationService.class);
                 api.service.get(new Callback<Configuration>() {
@@ -71,10 +77,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
             break;
 
-            case POPULAR_MOVIES_SYNC:
+            case SYNC_TYPE_DISCOVER_MOVIES:
             {
-                TheMovieDbApi<TheMovieDbService.MoviesService> api = new TheMovieDbApi<>(TheMovieDbService.MoviesService.class);
-                api.service.getPopular(new Callback<PagedResults<SimpleMovie>>() {
+                String mostPopular = Utilities.getString(R.string.pref_value_discovery_sort_order_most_popular);
+                // set the sort order
+                HashMap<String, Object> map = new HashMap<>();
+                if (Utilities.getPreference(R.string.pref_discovery_sort_order, R.string.pref_default_discovery_sort_order).equals(mostPopular)) {
+                    map.put("sort_by", "popularity.desc");
+                } else {
+                    map.put("sort_by", "vote_average.desc");
+                }
+
+                TheMovieDbApi<TheMovieDbService.DiscoverService> api = new TheMovieDbApi<>(TheMovieDbService.DiscoverService.class);
+                api.service.getMovieList(map, new Callback<PagedResults<SimpleMovie>>() {
                     @Override
                     public void success(PagedResults<SimpleMovie> simpleMoviePagedResults, Response response) {
                         ApiResultCacheHelper db = new ApiResultCacheHelper();

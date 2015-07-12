@@ -4,19 +4,19 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SyncStatusObserver;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import com.google.gson.Gson;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -115,11 +115,11 @@ public final class Utilities {
         String type = "unknown";
         if (Logger.VERBOSE) {
             switch (syncType) {
-                case SyncAdapter.CONFIGURATION_SYNC:
+                case SyncAdapter.SYNC_TYPE_CONFIGURATION:
                     type = "Configuration";
                     break;
 
-                case SyncAdapter.POPULAR_MOVIES_SYNC:
+                case SyncAdapter.SYNC_TYPE_DISCOVER_MOVIES:
                     type = "Popular Movies";
                     break;
             }
@@ -130,7 +130,7 @@ public final class Utilities {
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        bundle.putInt(SyncAdapter.SYNC_TYPE_BUNDLE_KEY, syncType);
+        bundle.putInt(SyncAdapter.KEY_SYNC_TYPE, syncType);
         ContentResolver.requestSync(accountInstance, providerAuthority, bundle);
         final int i = listenerHandles.size();
         Object handle = ContentResolver.addStatusChangeListener(ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE, new SyncStatusObserver() {
@@ -190,7 +190,7 @@ public final class Utilities {
     /**
      * Runs the specified sync every frequency intervals (i.e. if frequency = 2, and interval = DAY, the sync will run every 2 days)
      */
-    public static void addPeriodicSync(int syncType, int frequency, SyncInterval interval) {
+    public static void addPeriodicSync(int syncType, Bundle bundle, int frequency, SyncInterval interval) {
         long syncSeconds = 1L;
         final long secPerMin = 60L;
         final long minPerHour = 60L;
@@ -215,7 +215,14 @@ public final class Utilities {
                 break;
         }
 
-        ContentResolver.addPeriodicSync(accountInstance, providerAuthority, Bundle.EMPTY, syncSeconds);
+        if (bundle == Bundle.EMPTY) {
+            bundle = new Bundle();
+        }
+        if (!bundle.containsKey(SyncAdapter.KEY_SYNC_TYPE)) {
+            bundle.putInt(SyncAdapter.KEY_SYNC_TYPE, syncType);
+        }
+
+        ContentResolver.addPeriodicSync(accountInstance, providerAuthority, bundle, syncSeconds);
     }
 
     /**
@@ -256,6 +263,28 @@ public final class Utilities {
         // these are based off of the screen resolution
         posterWidth = desiredWidth;
         posterHeight = (int)Math.ceil(((double)posterWidth) * 1.5);
+    }
+
+    /**
+     * Gets a string from the resources
+     */
+    public static String getString(int id) {
+        return context.getResources().getString(id);
+    }
+
+    /**
+     * Gets a preference value
+     */
+    public static String getPreference(int keyStringId, int defaultValueId) {
+        return Utilities.getPreference(Utilities.getString(keyStringId), Utilities.getString(defaultValueId));
+    }
+
+    /**
+     * Gets a preference value
+     */
+    public static String getPreference(String key, String defaultValue) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(key, defaultValue);
     }
 
     public enum SyncInterval {

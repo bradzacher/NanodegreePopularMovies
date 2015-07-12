@@ -1,16 +1,15 @@
 package au.com.zacher.popularmovies.contract;
 
-import android.content.SyncStatusObserver;
 import android.database.Cursor;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 
+import au.com.zacher.popularmovies.R;
 import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.data.entry.ApiResultCacheEntry;
 import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
 import au.com.zacher.popularmovies.model.SimpleMovie;
 import au.com.zacher.popularmovies.sync.SyncAdapter;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Brad on 10/07/2015.
@@ -18,7 +17,7 @@ import retrofit.client.Response;
 public final class MovieContract {
     public static final String POPULAR_MOVIES_TYPE = "popular_movies";
 
-    public static void getPopularMovies(final ContractCallback<SimpleMovie[]> callback) {
+    public static void getDiscoverMovies(final ContractCallback<SimpleMovie[]> callback) {
         // attempt to load from the provider first
         loadFromProvider(new ContractCallback<SimpleMovie[]>() {
             @Override
@@ -30,7 +29,7 @@ public final class MovieContract {
             public void failure(Exception error) {
                 // attempt to force a sync
                 if (Utilities.isConnected()) {
-                    SyncAdapter.immediateSync(SyncAdapter.POPULAR_MOVIES_SYNC, new ContractCallback<Boolean>() {
+                    SyncAdapter.immediateSync(SyncAdapter.SYNC_TYPE_DISCOVER_MOVIES, Bundle.EMPTY, new ContractCallback<Boolean>() {
                         @Override
                         public void success(Boolean result) {
                             loadFromProvider(callback);

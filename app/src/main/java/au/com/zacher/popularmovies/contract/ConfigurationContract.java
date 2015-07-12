@@ -1,9 +1,7 @@
 package au.com.zacher.popularmovies.contract;
 
-import android.content.SyncStatusObserver;
 import android.database.Cursor;
-
-import com.google.gson.Gson;
+import android.os.Bundle;
 
 
 import au.com.zacher.popularmovies.Utilities;
@@ -11,9 +9,6 @@ import au.com.zacher.popularmovies.api.Configuration;
 import au.com.zacher.popularmovies.data.entry.ApiResultCacheEntry;
 import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
 import au.com.zacher.popularmovies.sync.SyncAdapter;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Brad on 10/07/2015.
@@ -39,7 +34,7 @@ public final class ConfigurationContract {
             @Override
             public void failure(Exception error) {
                 if (Utilities.isConnected() && instance == null) {
-                    SyncAdapter.immediateSync(SyncAdapter.CONFIGURATION_SYNC, new ContractCallback<Boolean>() {
+                    SyncAdapter.immediateSync(SyncAdapter.SYNC_TYPE_CONFIGURATION, Bundle.EMPTY, new ContractCallback<Boolean>() {
                         @Override
                         public void success(Boolean result) {
                             loadConfigFromProvider(callback);

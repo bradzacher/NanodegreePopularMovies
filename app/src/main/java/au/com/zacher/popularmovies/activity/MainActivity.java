@@ -1,8 +1,8 @@
 package au.com.zacher.popularmovies.activity;
 
-import android.content.Context;
-import android.graphics.Point;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +14,6 @@ import android.widget.Button;
 
 import java.util.Arrays;
 import android.os.Handler;
-import android.widget.RelativeLayout;
 
 import au.com.zacher.popularmovies.ActivityInitialiser;
 import au.com.zacher.popularmovies.Logger;
@@ -50,8 +49,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         ActivityInitialiser.initActivity(options, savedInstanceState, this, R.layout.activity_main);
 
         // setup our periodic syncs
-        Utilities.addPeriodicSync(SyncAdapter.CONFIGURATION_SYNC, 1, Utilities.SyncInterval.DAY);
-        Utilities.addPeriodicSync(SyncAdapter.POPULAR_MOVIES_SYNC, 1, Utilities.SyncInterval.DAY);
+        Utilities.addPeriodicSync(SyncAdapter.SYNC_TYPE_CONFIGURATION, Bundle.EMPTY, 1, Utilities.SyncInterval.DAY);
 
         // fetch the pieces of the view
         this.noInternetSection = this.findViewById(R.id.no_internet_section);
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     private void popularMoviesLoad() {
         this.setViewState(ViewState.IN_PROGRESS);
 
-        MovieContract.getPopularMovies(new ContractCallback<SimpleMovie[]>() {
+        MovieContract.getDiscoverMovies(new ContractCallback<SimpleMovie[]>() {
             @Override
             public void success(SimpleMovie[] movies) {
                 // show the list and add the loaded items

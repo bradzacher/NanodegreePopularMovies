@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -97,11 +98,10 @@ public abstract class DisplayItemListAdapter<T> extends RecyclerView.Adapter<Dis
         holder.bind(this.getContext(), item);
     }
 
+    @Override
     public void onClick(View v) {
         RecyclerView parent = (RecyclerView)v.getParent();
         this.onItemClick(parent.getChildLayoutPosition(v));
-
-        v.setBackgroundColor(0xFF0000);
     }
 
     /**

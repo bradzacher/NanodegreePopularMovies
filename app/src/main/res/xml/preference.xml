@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="@string/pref_discovery_sort_order"
+        android:title="Sort Order"
+        android:defaultValue="@string/pref_default_discovery_sort_order"
+        android:entryValues="@array/pref_discovery_sort_order_values"
+        android:entries="@array/pref_discovery_sort_order_labels" />
+</PreferenceScreen>

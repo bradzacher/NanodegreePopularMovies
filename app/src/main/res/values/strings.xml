@@ -30,4 +30,12 @@
     <!-- Sync Strings -->
     <string name="provider_authority">au.com.zacher.popularmovies.provider</string>
     <string name="provider_account_type">au.com.zacher.popularmovies</string>
+
+    <!-- Preference Strings -->
+    <string name="pref_discovery_sort_order">pref_discovery_sort_order</string>
+    <string name="pref_value_discovery_sort_order_most_popular">popular</string>
+    <string name="pref_value_discovery_sort_order_highest_rated">highest_rated</string>
+    <string name="pref_label_discovery_sort_order_most_popular">Most Popular</string>
+    <string name="pref_label_discovery_sort_order_highest_rated">Highest Rated</string>
+    <string name="pref_default_discovery_sort_order">@string/pref_value_discovery_sort_order_most_popular</string>
 </resources>
