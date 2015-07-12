@@ -12,7 +12,7 @@ import au.com.zacher.popularmovies.data.entry.DbEntry;
  */
 public class DbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "popularmovies.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
 
     public DbHelper(Context context) {

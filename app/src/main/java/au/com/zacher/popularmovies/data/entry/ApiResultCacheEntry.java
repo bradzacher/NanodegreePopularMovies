@@ -6,10 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import com.google.gson.Gson;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.data.ColumnType;
 import au.com.zacher.popularmovies.data.DbColumn;
 
@@ -32,7 +32,7 @@ public class ApiResultCacheEntry extends DbEntry {
         COLUMN_JSON = col;
         map.put("COLUMN_JSON", col);
 
-        col = new DbColumn("date", ColumnType.DATETIME);
+        col = new DbColumn("date", ColumnType.INTEGER);
         COLUMN_DATE = col;
         map.put("COLUMN_DATE", col);
 
@@ -81,5 +81,14 @@ public class ApiResultCacheEntry extends DbEntry {
     public static Object getObjectFromRow(Cursor cur, Class type) {
         Gson gson = new Gson();
         return gson.fromJson(cur.getString(cur.getColumnIndex(ApiResultCacheEntry.COLUMN_JSON.name)), type);
+    }
+
+    /**
+     * Checks if the cursor row is older than the given age (doesn't perform any checks on the cursor)
+     */
+    public static boolean isOlderThan(Cursor cur, long age) {
+        long insertedTimeStamp = cur.getLong(cur.getColumnIndex(ApiResultCacheEntry.COLUMN_DATE.name));
+        long timeAgo = (new Date().getTime()) - age;
+        return (timeAgo - insertedTimeStamp) > 0;
     }
 }

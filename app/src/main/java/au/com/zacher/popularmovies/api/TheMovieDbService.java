@@ -40,23 +40,23 @@ public interface TheMovieDbService {
     // tODO: maybe include collections?
    /*public interface CollectionsService {
         @GET("collection/{id}")
-        public void getCollection(@Path("id") int id, Callback<Object> callback);
+        public void getCollection(@Path("id") String id, Callback<Object> callback);
 
         @GET("collection/{id}/images")
-        public void getImages(@Path("id") int id, Callback<Object> callback);
+        public void getImages(@Path("id") String id, Callback<Object> callback);
 
         @GET("collection/{id}?append_to_response=images")
-        public void getCollectionAndImages(@Path("id") int id, Callback<Object> callback);
+        public void getCollectionAndImages(@Path("id") String id, Callback<Object> callback);
     }*/
 
     public interface CompaniesService {
         @GET("/company/{id}")
-        public void getCompany(@Path("id") int id, Callback<Company> callback);
+        public void getCompany(@Path("id") String id, Callback<Company> callback);
 
         @GET("/company/{id}/movies")
-        public void getCompanyMovies(@Path("id") int id, Callback<RelatedPagedResults<SimpleMovie>> callback);
+        public void getCompanyMovies(@Path("id") String id, Callback<RelatedPagedResults<SimpleMovie>> callback);
         @GET("/company/{id}/movies")
-        public void getCompanyMovies(@Path("id") int id, @Query("page") int pageNum, Callback<RelatedPagedResults<SimpleMovie>> callback);
+        public void getCompanyMovies(@Path("id") String id, @Query("page") int pageNum, Callback<RelatedPagedResults<SimpleMovie>> callback);
     }
 
     public interface DiscoverService {
@@ -79,52 +79,52 @@ public interface TheMovieDbService {
         public void getTvList(Callback<GenreResults> callback);
 
         @GET("/genre/{id}/movies")
-        public void getMoviesForGenre(@Path("id") int id, Callback<RelatedPagedResults<SimpleMovie>> callback);
+        public void getMoviesForGenre(@Path("id") String id, Callback<RelatedPagedResults<SimpleMovie>> callback);
         @GET("/genre/{id}/movies")
-        public void getMoviesForGenre(@Path("id") int id, @QueryMap Map<String, Object> map, Callback<RelatedPagedResults<SimpleMovie>> callback);
+        public void getMoviesForGenre(@Path("id") String id, @QueryMap Map<String, Object> map, Callback<RelatedPagedResults<SimpleMovie>> callback);
     }
 
     public interface KeywordService {
         @GET("/keyword/{id}")
-        public void getKeyword(@Path("id") int id, Callback<Keyword> callback);
+        public void getKeyword(@Path("id") String id, Callback<Keyword> callback);
 
         @GET("/keyword/{id}/movies")
-        public void getKeywordMovies(@Path("id") int id, Callback<RelatedPagedResults<SimpleMovie>> callback);
+        public void getKeywordMovies(@Path("id") String id, Callback<RelatedPagedResults<SimpleMovie>> callback);
     }
 
     public interface MoviesService {
         @GET("/movie/{id}")
-        public void getMovie(@Path("id") int id, Callback<Movie> callback);
+        public void getMovie(@Path("id") String id, Callback<Movie> callback);
 
         //@GET("/movie/{id}")
-        //public void getMovieWith(@Path("id") int id, @Query("append_to_response") String commaSeparatedList, Callback<Object> callback);
+        //public void getMovieWith(@Path("id") String id, @Query("append_to_response") String commaSeparatedList, Callback<Object> callback);
 
         //@GET("/movie/{id}/alternative_titles")
-        //public void getMovieAlternativeTitles(@Path("id") int id, Callback<Object> callback);
+        //public void getMovieAlternativeTitles(@Path("id") String id, Callback<Object> callback);
 
         //@GET("/movie/{id}/credits")
-        //public void getMovieCredits(@Path("id") int id, Callback<Object> callback);
+        //public void getMovieCredits(@Path("id") String id, Callback<Object> callback);
 
         //@GET("/movie/{id}/images")
-        //public void getMovieImages(@Path("id") int id, Callback<Object> callback);
+        //public void getMovieImages(@Path("id") String id, Callback<Object> callback);
 
         //@GET("/movie/{id}/keywords")
-        //public void getMovieKeywords(@Path("id") int id, Callback<Object> callback);
+        //public void getMovieKeywords(@Path("id") String id, Callback<Object> callback);
 
         //@GET("/movie/{id}/releases")
-        //public void getMovieReleases(@Path("id") int id, Callback<Object> callback);
+        //public void getMovieReleases(@Path("id") String id, Callback<Object> callback);
 
         @GET("/movie/{id}/videos")
-        public void getMovieVideos(@Path("id") int id, Callback<RelatedResults<MovieVideo>> callback);
+        public void getMovieVideos(@Path("id") String id, Callback<RelatedResults<MovieVideo>> callback);
 
         //@GET("/movie/{id}/translations")
-        //public void getMovieTranslations(@Path("id") int id, Callback<Object> callback);
+        //public void getMovieTranslations(@Path("id") String id, Callback<Object> callback);
 
         @GET("/movie/{id}/similar")
-        public void getSimilarMovies(@Path("id") int id, Callback<PagedResults<SimpleMovie>> callback);
+        public void getSimilarMovies(@Path("id") String id, Callback<PagedResults<SimpleMovie>> callback);
 
         @GET("/movie/{id}/reviews")
-        public void getMovieReviews(@Path("id") int id, Callback<RelatedPagedResults<Review>> callback);
+        public void getMovieReviews(@Path("id") String id, Callback<RelatedPagedResults<Review>> callback);
 
         //@GET("/movie/latest")
         //public void getLatest(Callback<Object> callback);
@@ -132,27 +132,27 @@ public interface TheMovieDbService {
         @GET("/movie/now_playing")
         public void getNowPlaying(Callback<DatedPagedResults<SimpleMovie>> callback);
         @GET("/movie/now_playing")
-        public void getNowPlaying(@Query("page") int pageNum, Callback<DatedPagedResults<SimpleMovie>> callback);
+        public void getNowPlaying(@Query("page") String pageNum, Callback<DatedPagedResults<SimpleMovie>> callback);
 
         @GET("/movie/popular")
         public void getPopular(Callback<PagedResults<SimpleMovie>> callback);
         @GET("/movie/popular")
-        public void getPopular(@Query("page") int pageNum, Callback<PagedResults<SimpleMovie>> callback);
+        public void getPopular(@Query("page") String pageNum, Callback<PagedResults<SimpleMovie>> callback);
 
         @GET("/movie/top_rated")
         public void getTopRated(Callback<PagedResults<SimpleMovie>> callback);
         @GET("/movie/top_rated")
-        public void getTopRated(@Query("page") int pageNum, Callback<PagedResults<SimpleMovie>> callback);
+        public void getTopRated(@Query("page") String pageNum, Callback<PagedResults<SimpleMovie>> callback);
 
         @GET("/movie/upcoming")
         public void getUpcoming(Callback<DatedPagedResults<SimpleMovie>> callback);
         @GET("/movie/upcoming")
-        public void getUpcoming(@Query("page") int pageNum, Callback<DatedPagedResults<SimpleMovie>> callback);
+        public void getUpcoming(@Query("page") String pageNum, Callback<DatedPagedResults<SimpleMovie>> callback);
     }
 
     public interface ReviewsService {
         @GET("/review/{id}")
-        public void getReview(@Path("id") int id, Callback<Review> callback);
+        public void getReview(@Path("id") String id, Callback<Review> callback);
     }
 
     // TODO: maybe include search?
@@ -190,37 +190,37 @@ public interface TheMovieDbService {
     // TODO: maybe extend to tv?
     /*public interface TVService {
         @GET("/tv/{id}")
-        public void getTv(@Path("id") int id, Callback<Object> callback);
+        public void getTv(@Path("id") String id, Callback<Object> callback);
 
         //@GET("/tv/{id}")
-        //public void getTvWith(@Path("id") int id, @Query("append_to_response") String commaSeparatedList, Callback<Object> callback);
+        //public void getTvWith(@Path("id") String id, @Query("append_to_response") String commaSeparatedList, Callback<Object> callback);
 
         //@GET("/tv/{id}/alternative_titles")
-        //public void getTvAlternativeTitles(@Path("id") int id, Callback<Object> callback);
+        //public void getTvAlternativeTitles(@Path("id") String id, Callback<Object> callback);
 
         //@GET("/tv/{id}/credits")
-        //public void getTvCredits(@Path("id") int id, Callback<Object> callback);
+        //public void getTvCredits(@Path("id") String id, Callback<Object> callback);
 
         //@GET("/tv/{id}/images")
-        //public void getTvImages(@Path("id") int id, Callback<Object> callback);
+        //public void getTvImages(@Path("id") String id, Callback<Object> callback);
 
         //@GET("/tv/{id}/keywords")
-        //public void getTvKeywords(@Path("id") int id, Callback<Object> callback);
+        //public void getTvKeywords(@Path("id") String id, Callback<Object> callback);
 
         //@GET("/tv/{id}/releases")
-        //public void getTvReleases(@Path("id") int id, Callback<Object> callback);
+        //public void getTvReleases(@Path("id") String id, Callback<Object> callback);
 
         @GET("/tv/{id}/videos")
-        public void getTvVideos(@Path("id") int id, Callback<Object> callback);
+        public void getTvVideos(@Path("id") String id, Callback<Object> callback);
 
         //@GET("/tv/{id}/translations")
-        //public void getTvTranslations(@Path("id") int id, Callback<Object> callback);
+        //public void getTvTranslations(@Path("id") String id, Callback<Object> callback);
 
         @GET("/tv/{id}/similar")
-        public void getSimilarTv(@Path("id") int id, Callback<Object> callback);
+        public void getSimilarTv(@Path("id") String id, Callback<Object> callback);
 
         @GET("/tv/{id}/reviews")
-        public void getTvReviews(@Path("id") int id, Callback<Object> callback);
+        public void getTvReviews(@Path("id") String id, Callback<Object> callback);
 
         @GET("/tv/latest")
         public void getLatest(Callback<Object> callback);
