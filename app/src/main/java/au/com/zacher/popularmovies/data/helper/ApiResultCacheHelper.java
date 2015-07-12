@@ -1,6 +1,7 @@
 package au.com.zacher.popularmovies.data.helper;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -17,6 +18,9 @@ import au.com.zacher.popularmovies.data.entry.ApiResultCacheEntry;
 public class ApiResultCacheHelper extends DbHelper {
     public ApiResultCacheHelper() {
         super(Utilities.getApplicationContext());
+    }
+    public ApiResultCacheHelper(Context context) {
+        super(context);
     }
 
     public void add(String type, Object obj) {

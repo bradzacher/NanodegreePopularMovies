@@ -10,10 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import java.util.Arrays;
 import android.os.Handler;
+import android.widget.Spinner;
 
 import au.com.zacher.popularmovies.ActivityInitialiser;
 import au.com.zacher.popularmovies.Logger;
@@ -29,13 +32,14 @@ import au.com.zacher.popularmovies.model.SimpleMovie;
 import au.com.zacher.popularmovies.sync.SyncAdapter;
 
 
-public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener, Spinner.OnItemSelectedListener {
 
     private View noInternetSection;
     private Button loadRetryButton;
     private View progressBar;
     private RecyclerView movieGrid;
     private SimpleMovieListAdapter movieGridAdapter;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         this.progressBar = this.findViewById(R.id.progress_bar);
         this.movieGrid = (RecyclerView)this.findViewById(R.id.movie_grid);
         this.movieGridAdapter = new SimpleMovieListAdapter(this.getApplicationContext(), R.layout.fragment_display_item);
+        this.toolbar = (Toolbar)this.findViewById(R.id.toolbar);
 
         // setup the display grid
         this.movieGrid.setHasFixedSize(false);
@@ -95,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
     }
     private void popularMoviesLoad() {
         this.setViewState(ViewState.IN_PROGRESS);
+        this.movieGridAdapter.clear();
 
         MovieContract.getDiscoverMovies(new ContractCallback<SimpleMovie[]>() {
             @Override
@@ -156,6 +162,11 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         // Inflate the menu; this adds items to the action bar if it is present.
         this.getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        this.getLayoutInflater().inflate(R.layout.fragment_sort_order_menu, this.toolbar);
+        Spinner spinner = (Spinner)this.toolbar.findViewById(R.id.sort_order_menu);
+
+        spinner.setOnItemSelectedListener(this);
+
         return true;
     }
 
@@ -168,17 +179,33 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return this.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String item = (String)parent.getItemAtPosition(position);
+        String mostPopular = this.getString(R.string.pref_label_discovery_sort_order_most_popular);
+        String prefValue;
+        if (item.equals(mostPopular)) {
+            prefValue = this.getString(R.string.pref_value_discovery_sort_order_most_popular);
+        } else {
+            prefValue = this.getString(R.string.pref_value_discovery_sort_order_highest_rated);
+        }
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().putString(this.getString(R.string.pref_discovery_sort_order), prefValue).apply();
+
+        // reload the data
+        this.popularMoviesLoad();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) { }
 
     private enum ViewState {
         IN_PROGRESS, ERROR, SUCCESS

@@ -82,10 +82,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 String mostPopular = Utilities.getString(R.string.pref_value_discovery_sort_order_most_popular);
                 // set the sort order
                 HashMap<String, Object> map = new HashMap<>();
-                if (Utilities.getPreference(R.string.pref_discovery_sort_order, R.string.pref_default_discovery_sort_order).equals(mostPopular)) {
+                final boolean isMostPopular = Utilities.getPreference(R.string.pref_discovery_sort_order, R.string.pref_default_discovery_sort_order).equals(mostPopular);
+                if (isMostPopular) {
                     map.put("sort_by", "popularity.desc");
                 } else {
                     map.put("sort_by", "vote_average.desc");
+                    map.put("vote_count.gte", "100"); // just to stop the movies that have only been voted on a few times
                 }
 
                 TheMovieDbApi<TheMovieDbService.DiscoverService> api = new TheMovieDbApi<>(TheMovieDbService.DiscoverService.class);
@@ -93,7 +95,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     @Override
                     public void success(PagedResults<SimpleMovie> simpleMoviePagedResults, Response response) {
                         ApiResultCacheHelper db = new ApiResultCacheHelper();
-                        db.add(MovieContract.POPULAR_MOVIES_TYPE, simpleMoviePagedResults.results);
+                        String type = (isMostPopular) ? MovieContract.POPULAR_MOVIES_MOST_POPULAR_TYPE : MovieContract.POPULAR_MOVIES_HIGHEST_RATED_TYPE;
+
+                        db.add(type, simpleMoviePagedResults.results);
 
                         if (callback != null) {
                             callback.success(true);

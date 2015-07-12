@@ -66,7 +66,16 @@ public abstract class DisplayItemListAdapter<T> extends RecyclerView.Adapter<Dis
             this.addItem(item, false);
         }
         int end = this.itemList.size() - 1;
-        this.notifyItemRangeChanged(start, end);
+        //this.notifyItemRangeChanged(start, end);
+        this.notifyDataSetChanged();
+    }
+
+    /**
+     * Clears the adapter's storage
+     */
+    public void clear() {
+        this.itemList.clear();
+        this.notifyDataSetChanged();
     }
 
     /**

@@ -15,7 +15,9 @@ import au.com.zacher.popularmovies.sync.SyncAdapter;
  * Created by Brad on 10/07/2015.
  */
 public final class MovieContract {
-    public static final String POPULAR_MOVIES_TYPE = "popular_movies";
+    private static final String POPULAR_MOVIES_BASE_TYPE = "popular_movies";
+    public static final String POPULAR_MOVIES_MOST_POPULAR_TYPE = POPULAR_MOVIES_BASE_TYPE + "_" + Utilities.getString(R.string.pref_value_discovery_sort_order_most_popular);
+    public static final String POPULAR_MOVIES_HIGHEST_RATED_TYPE = POPULAR_MOVIES_BASE_TYPE + "_" + Utilities.getString(R.string.pref_value_discovery_sort_order_highest_rated);
 
     public static void getDiscoverMovies(final ContractCallback<SimpleMovie[]> callback) {
         // attempt to load from the provider first
@@ -49,7 +51,10 @@ public final class MovieContract {
 
     private static void loadFromProvider(ContractCallback<SimpleMovie[]> callback) {
         ApiResultCacheHelper provider = new ApiResultCacheHelper();
-        Cursor cursor = provider.get(POPULAR_MOVIES_TYPE);
+
+        String preference = Utilities.getPreference(R.string.pref_discovery_sort_order, R.string.pref_default_discovery_sort_order);
+
+        Cursor cursor = provider.get(POPULAR_MOVIES_BASE_TYPE + "_" + preference);
 
         if (cursor == null || cursor.getCount() == 0) {
             callback.failure(new Exception("No data in provider"));
