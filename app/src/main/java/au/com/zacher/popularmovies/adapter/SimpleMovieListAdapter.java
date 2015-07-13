@@ -26,7 +26,7 @@ public class SimpleMovieListAdapter extends DisplayItemListAdapter<SimpleMovie> 
 
     @Override
     protected String getItemImage(SimpleMovie item) {
-        return "/" + Utilities.getPosterSize() + item.poster_path;
+        return item.poster_path;
     }
 
     @Override

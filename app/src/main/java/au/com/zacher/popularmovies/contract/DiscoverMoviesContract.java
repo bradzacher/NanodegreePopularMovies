@@ -64,10 +64,10 @@ public final class DiscoverMoviesContract {
         // five minutes ago
         if (!ApiResultCacheEntry.isOlderThan(cursor, 1000L * 60L * 5L) || !Utilities.isConnected()) {
             SimpleMovie[] results = (SimpleMovie[]) ApiResultCacheEntry.getObjectFromRow(cursor, SimpleMovie[].class);
-            cursor.close();
             callback.success(results);
         } else {
             callback.failure(new Exception("Data too old"));
         }
+        cursor.close();
     }
 }

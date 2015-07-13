@@ -22,6 +22,7 @@ import au.com.zacher.popularmovies.contract.DiscoverMoviesContract;
 import au.com.zacher.popularmovies.contract.MovieContract;
 import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
 import au.com.zacher.popularmovies.model.Movie;
+import au.com.zacher.popularmovies.model.MovieWithReleases;
 import au.com.zacher.popularmovies.model.SimpleMovie;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -144,9 +145,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 final String id = extras.getString(MovieContract.KEY_MOVIE_ID);
 
                 TheMovieDbApi<TheMovieDbService.MoviesService> api = new TheMovieDbApi<>(TheMovieDbService.MoviesService.class);
-                api.service.getMovie(id, new Callback<Movie>() {
+                api.service.getMovieWithReleases(id, new Callback<MovieWithReleases>() {
                     @Override
-                    public void success(Movie movie, Response response) {
+                    public void success(MovieWithReleases movie, Response response) {
                         Logger.d(R.string.log_sync_end, finalStringType);
 
                         ApiResultCacheHelper db = new ApiResultCacheHelper();

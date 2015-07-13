@@ -6,7 +6,7 @@ import android.os.Bundle;
 import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.data.entry.ApiResultCacheEntry;
 import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
-import au.com.zacher.popularmovies.model.Movie;
+import au.com.zacher.popularmovies.model.MovieWithReleases;
 import au.com.zacher.popularmovies.sync.SyncAdapter;
 
 /**
@@ -16,11 +16,11 @@ public final class MovieContract {
     public static final String MOVIES_TYPE = "movie_";
     public static final String KEY_MOVIE_ID = "movie-id";
 
-    public static void getMovie(final String id, final ContractCallback<Movie> callback) {
+    public static void getMovie(final String id, final ContractCallback<MovieWithReleases> callback) {
         // attempt to load from the provider first
-        loadFromProvider(id, new ContractCallback<Movie>() {
+        loadFromProvider(id, new ContractCallback<MovieWithReleases>() {
             @Override
-            public void success(Movie movies) {
+            public void success(MovieWithReleases movies) {
                 callback.success(movies);
             }
 
@@ -48,7 +48,7 @@ public final class MovieContract {
         });
     }
 
-    private static void loadFromProvider(String id, ContractCallback<Movie> callback) {
+    private static void loadFromProvider(String id, ContractCallback<MovieWithReleases> callback) {
         ApiResultCacheHelper provider = new ApiResultCacheHelper();
 
         Cursor cursor = provider.get(MOVIES_TYPE + "_" + id);
@@ -61,11 +61,11 @@ public final class MovieContract {
 
         // five minutes ago
         if (!ApiResultCacheEntry.isOlderThan(cursor, 1000L * 60L * 5L) || !Utilities.isConnected()) {
-            Movie results = (Movie) ApiResultCacheEntry.getObjectFromRow(cursor, Movie.class);
-            cursor.close();
+            MovieWithReleases results = (MovieWithReleases) ApiResultCacheEntry.getObjectFromRow(cursor, MovieWithReleases.class);
             callback.success(results);
         } else {
             callback.failure(new Exception("Data too old"));
         }
+        cursor.close();
     }
 }

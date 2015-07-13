@@ -11,6 +11,20 @@
 
     <!-- Movie Details Activity String -->
     <string name="movie_details_activity_title">Details</string>
+    <string name="movie_details_backdrop_image_description">Movie Backdrop</string>
+    <string name="movie_details_activity_favourite_button_text">Favourite</string>
+    <string name="movie_details_activity_vote_average_suffix" translatable="false">%</string>
+    <string name="movie_details_activity_vote_average_prefix">Rating</string>
+    <string name="movie_details_activity_vote_count_suffix"> Votes</string>
+    <string name="movie_details_activity_summary_title">Summary</string>
+    <string name="movie_details_activity_summary_release_date">Release Date</string>
+    <string name="movie_details_activity_summary_revenue">Revenue</string>
+    <string name="movie_details_activity_summary_genres">Genres</string>
+    <string name="movie_details_activity_summary_status">Status</string>
+    <string name="movie_details_activity_summary_language">Language</string>
+    <string name="movie_details_activity_summary_runtime">Runtime</string>
+    <string name="movie_details_activity_summary_runtime_units">min</string>
+    <string name="movie_details_activity_summary_budget">Budget</string>
 
     <!-- Logging strings -->
     <string name="log_tag" translatable="false">@string/app_name</string>

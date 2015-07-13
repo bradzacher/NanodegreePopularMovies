@@ -12,6 +12,7 @@ import au.com.zacher.popularmovies.model.Company;
 import au.com.zacher.popularmovies.model.Keyword;
 import au.com.zacher.popularmovies.model.Movie;
 import au.com.zacher.popularmovies.model.MovieVideo;
+import au.com.zacher.popularmovies.model.MovieWithReleases;
 import au.com.zacher.popularmovies.model.Review;
 import au.com.zacher.popularmovies.model.SimpleMovie;
 import retrofit.Callback;
@@ -95,6 +96,9 @@ public interface TheMovieDbService {
     public interface MoviesService {
         @GET("/movie/{id}")
         public void getMovie(@Path("id") String id, Callback<Movie> callback);
+
+        @GET("/movie/{id}?append_to_response=releases")
+        public void getMovieWithReleases(@Path("id") String id, Callback<MovieWithReleases> callback);
 
         //@GET("/movie/{id}")
         //public void getMovieWith(@Path("id") String id, @Query("append_to_response") String commaSeparatedList, Callback<Object> callback);

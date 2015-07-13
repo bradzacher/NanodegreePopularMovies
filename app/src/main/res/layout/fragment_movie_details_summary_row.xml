@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/row_title"
+        style="@style/MovieDetails_Summary_Text"
+        tools:text="Release Date" />
+    <TextView
+        android:id="@+id/row_text"
+        android:gravity="right"
+        style="@style/MovieDetails_Summary_Text"
+        tools:text="14/07/2015" />
+</LinearLayout>
