@@ -11,6 +11,10 @@ import android.widget.ProgressBar;
 import au.com.zacher.popularmovies.ActivityInitialiser;
 import au.com.zacher.popularmovies.R;
 import au.com.zacher.popularmovies.ToolbarOptions;
+import au.com.zacher.popularmovies.Utilities;
+import au.com.zacher.popularmovies.api.Configuration;
+import au.com.zacher.popularmovies.contract.ConfigurationContract;
+import au.com.zacher.popularmovies.contract.ContractCallback;
 
 /**
  * Created by Brad on 13/07/2015.
@@ -22,7 +26,26 @@ public abstract class ActivityBase extends AppCompatActivity {
     protected Toolbar toolbar;
 
     protected void onCreate(Bundle savedInstanceState, ToolbarOptions options, int layoutId) {
+        this.onCreate(savedInstanceState, options, layoutId, false);
+    }
+    protected void onCreate(Bundle savedInstanceState, ToolbarOptions options, int layoutId, boolean checkForConfiguration) {
         super.onCreate(savedInstanceState);
+
+        Utilities.setApplicationContext(this.getApplicationContext());
+
+        if (checkForConfiguration && ConfigurationContract.getInstance() == null) {
+            ConfigurationContract.getConfig(new ContractCallback<Configuration>() {
+                @Override
+                public void success(Configuration result) {
+                    Utilities.initFromConfig(result);
+                }
+
+                @Override
+                public void failure(Exception e) {
+                    // this shouldn't happen - this path only gets called from child views - which can only be reached if the MainActivity has at one point had a valid config
+                }
+            });
+        }
 
         ActivityInitialiser.initActivity(options, savedInstanceState, this, layoutId);
 

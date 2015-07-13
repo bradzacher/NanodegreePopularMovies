@@ -34,12 +34,11 @@ public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClic
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Utilities.setApplicationContext(this.getApplicationContext());
-        Logger.logActionCreate("MainActivity");
-
         ToolbarOptions options = new ToolbarOptions();
         options.enableUpButton = false;
         super.onCreate(savedInstanceState, options, R.layout.activity_main);
+
+        Logger.logActionCreate("MainActivity");
 
         // setup our periodic syncs
         Utilities.addPeriodicSync(SyncAdapter.SYNC_TYPE_CONFIGURATION, Bundle.EMPTY, 1, Utilities.SyncInterval.DAY);

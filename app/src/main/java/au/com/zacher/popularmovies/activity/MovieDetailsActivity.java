@@ -58,11 +58,11 @@ public class MovieDetailsActivity extends ActivityBase {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Logger.logActionCreate("MainActivity");
-
         ToolbarOptions options = new ToolbarOptions();
         options.enableUpButton = true;
-        super.onCreate(savedInstanceState, options, R.layout.activity_movie_details);
+        super.onCreate(savedInstanceState, options, R.layout.activity_movie_details, true);
+
+        Logger.logActionCreate("MainActivity");
 
         // get the basic items from the intent
         Intent i = this.getIntent();
@@ -128,7 +128,6 @@ public class MovieDetailsActivity extends ActivityBase {
                 // set the size of the title bar
                 collapsingTitle.setScrollOffset(percent);
                 // tint the image on collapse cos it looks neat
-                Color c = new Color();
                 collapsingTitleImage.setColorFilter(Color.argb((int) (170f * percent), toolbarColours[0], toolbarColours[1], toolbarColours[2]));
             }
         });
