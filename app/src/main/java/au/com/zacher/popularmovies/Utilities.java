@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 Brad Zacher
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package au.com.zacher.popularmovies;
 
 import android.accounts.Account;
@@ -84,7 +100,7 @@ public final class Utilities {
      * @param holder the holder to load the image into
      */
     public static void backgroundLoadImage(final Context context, final DisplayItem item, final DisplayItemViewHolder holder) {
-        Picasso.with(context).cancelRequest(holder.image);
+        Picasso.with(context).cancelRequest(holder.image); // make sure to cancel any existing requests so that we don't get accidental overwrites
         Picasso.with(context)
                 .load(Utilities.getBasePosterUrl() + item.imageUrl)
                 .placeholder(R.drawable.ic_local_movies_black_48dp)
@@ -118,11 +134,17 @@ public final class Utilities {
                 (mobileInfo != null && mobileInfo.isConnected());
     }
 
+    /**
+     * Converts an object to its json representation
+     */
     public static String getObjectJson(Object o) {
         Gson gson = new Gson();
         return gson.toJson(o);
     }
 
+    /**
+     * Triggers an immediate sync
+     */
     public static void triggerSync(int syncType, final SyncStatusObserver callback) {
         String type = "unknown";
         if (Logger.VERBOSE) {
@@ -234,7 +256,7 @@ public final class Utilities {
             bundle.putInt(SyncAdapter.KEY_SYNC_TYPE, syncType);
         }
 
-        ContentResolver.addPeriodicSync(accountInstance, providerAuthority, bundle, syncSeconds);
+        ContentResolver.addPeriodicSync(accountInstance, providerAuthority, bundle, frequency * syncSeconds);
     }
 
     /**
@@ -269,7 +291,7 @@ public final class Utilities {
         for (String width : widthStrs) {
             try {
                 widths[i++] = Integer.parseInt(width.substring(1));
-            } catch (Exception ignored) { }
+            } catch (NumberFormatException ignored) { } // any invalid widths we don't care for (esp you, "original"...)
         }
         Arrays.sort(widths);
 

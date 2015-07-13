@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 Brad Zacher
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package au.com.zacher.popularmovies.activity;
 
 import android.content.Intent;
@@ -169,6 +185,15 @@ public class MovieDetailsActivity extends ActivityBase {
         TextView taglineText = (TextView)this.findViewById(R.id.movie_tagline);
         ImageView miniPosterImage = (ImageView)this.findViewById(R.id.movie_mini_poster);
 
+        // load any required images
+        Picasso.with(this)
+                .load(Utilities.getBaseBackdropUrl() + result.backdrop_path)
+                .into(this.collapsingTitleImage);
+        Picasso.with(this)
+                .load(Utilities.getBasePosterUrl() + result.poster_path)
+                .into(miniPosterImage);
+
+        // set the values into the fixed fields
         voteCountText.setText(String.valueOf(result.vote_count));
         voteAverageText.setText(String.valueOf((int)(result.vote_average * 10)) + this.getString(R.string.movie_details_activity_vote_average_suffix));
         plotSynopsisText.setText(result.overview);
@@ -191,6 +216,7 @@ public class MovieDetailsActivity extends ActivityBase {
                 Date d = apiDateFormat.parse(r.release_date);
                 releaseDate = localeDateFormat.format(d);
             } catch (ParseException ignored) {
+                // fall back on the original release date from the response
                 releaseDate = r.release_date;
             }
 
@@ -248,13 +274,6 @@ public class MovieDetailsActivity extends ActivityBase {
             ((TextView)v.findViewById(R.id.row_text)).setText(item[1]);
             this.summaryList.addView(v);
         }
-
-        Picasso.with(this)
-                .load(Utilities.getBaseBackdropUrl() + result.backdrop_path)
-                .into(this.collapsingTitleImage);
-        Picasso.with(this)
-                .load(Utilities.getBasePosterUrl() + result.poster_path)
-                .into(miniPosterImage);
     }
 
     @Override
