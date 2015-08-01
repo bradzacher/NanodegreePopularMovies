@@ -41,10 +41,11 @@ import au.com.zacher.popularmovies.contract.ContractCallback;
 import au.com.zacher.popularmovies.contract.DiscoverMoviesContract;
 import au.com.zacher.popularmovies.model.SimpleMovie;
 import au.com.zacher.popularmovies.sync.SyncAdapter;
+import butterknife.Bind;
 
 
 public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClickListener, Spinner.OnItemSelectedListener {
-    private RecyclerView movieGrid;
+    @Bind(R.id.movie_grid) protected RecyclerView movieGrid;
     private SimpleMovieListAdapter movieGridAdapter;
     private boolean initialLoadDone;
 
@@ -60,7 +61,6 @@ public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClic
         Utilities.addPeriodicSync(SyncAdapter.SYNC_TYPE_CONFIGURATION, Bundle.EMPTY, 1, Utilities.SyncInterval.DAY);
 
         // fetch the pieces of the view
-        this.movieGrid = (RecyclerView)this.findViewById(R.id.movie_grid);
         this.movieGridAdapter = new SimpleMovieListAdapter(this, R.layout.fragment_display_item);
 
         // setup the display grid

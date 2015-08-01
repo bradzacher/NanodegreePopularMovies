@@ -31,15 +31,17 @@ import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.api.Configuration;
 import au.com.zacher.popularmovies.contract.ConfigurationContract;
 import au.com.zacher.popularmovies.contract.ContractCallback;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by Brad on 13/07/2015.
  */
 public abstract class ActivityBase extends AppCompatActivity {
-    protected ProgressBar progressBar;
-    protected View noInternetSection;
-    protected Button loadRetryButton;
-    protected Toolbar toolbar;
+    @Bind(R.id.progress_bar)        protected ProgressBar progressBar;
+    @Bind(R.id.no_internet_section) protected View noInternetSection;
+    @Bind(R.id.retry_button)        protected Button loadRetryButton;
+    @Bind(R.id.toolbar)             protected Toolbar toolbar;
 
     protected void onCreate(Bundle savedInstanceState, ToolbarOptions options, int layoutId) {
         this.onCreate(savedInstanceState, options, layoutId, false);
@@ -65,10 +67,7 @@ public abstract class ActivityBase extends AppCompatActivity {
 
         ActivityInitialiser.initActivity(options, savedInstanceState, this, layoutId);
 
-        this.progressBar = (ProgressBar)this.findViewById(R.id.progress_bar);
-        this.noInternetSection = this.findViewById(R.id.no_internet_section);
-        this.loadRetryButton = (Button)this.noInternetSection.findViewById(R.id.retry_button);
-        this.toolbar = (Toolbar)this.findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
     }
 
     public void setViewState(final ViewState state) {

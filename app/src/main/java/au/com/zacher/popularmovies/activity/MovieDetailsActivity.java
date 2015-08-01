@@ -50,6 +50,7 @@ import au.com.zacher.popularmovies.contract.ContractCallback;
 import au.com.zacher.popularmovies.contract.MovieContract;
 import au.com.zacher.popularmovies.model.MovieWithReleases;
 import au.com.zacher.popularmovies.model.Release;
+import butterknife.Bind;
 
 /**
  * Created by Brad on 12/07/2015.
@@ -61,11 +62,11 @@ public class MovieDetailsActivity extends ActivityBase {
     private String movieId;
     private String movieTitle;
 
-    private ScrollView movieSummary;
-    private CollapsingTitleLayout collapsingTitle;
-    private ImageView collapsingTitleImage;
-    private Button addFavouriteButton;
-    private LinearLayout summaryList;
+    @Bind(R.id.movie_summary)           protected ScrollView movieSummary;
+    @Bind(R.id.backdrop_toolbar)        protected CollapsingTitleLayout collapsingTitle;
+    @Bind(R.id.backdrop_toolbar_image)  protected ImageView collapsingTitleImage;
+    @Bind(R.id.add_favourite_button)    protected Button addFavouriteButton;
+    @Bind(R.id.movie_summary_list)      protected LinearLayout summaryList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +80,6 @@ public class MovieDetailsActivity extends ActivityBase {
         Intent i = this.getIntent();
         this.movieId = i.getStringExtra(MovieDetailsActivity.KEY_MOVIE_ID);
         this.movieTitle = i.getStringExtra(MovieDetailsActivity.KEY_MOVIE_TITLE);
-
-        // get the view items
-        this.collapsingTitle = (CollapsingTitleLayout)this.findViewById(R.id.backdrop_toolbar);
-        this.collapsingTitleImage = (ImageView)this.collapsingTitle.findViewById(R.id.backdrop_toolbar_image);
-        this.movieSummary = (ScrollView)this.findViewById(R.id.movie_summary);
-        this.addFavouriteButton = (Button)this.findViewById(R.id.add_favourite_button);
-        this.summaryList = (LinearLayout)this.findViewById(R.id.movie_summary_list);
 
         this.addFavouriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
