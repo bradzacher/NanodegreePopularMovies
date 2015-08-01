@@ -18,7 +18,6 @@ package au.com.zacher.popularmovies.adapter;
 
 import android.content.Context;
 
-import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.activity.MovieDetailsActivity;
 import au.com.zacher.popularmovies.model.SimpleMovie;
 

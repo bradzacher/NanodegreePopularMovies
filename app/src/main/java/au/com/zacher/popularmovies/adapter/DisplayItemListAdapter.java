@@ -76,12 +76,9 @@ public abstract class DisplayItemListAdapter<T> extends RecyclerView.Adapter<Dis
      * Constructs and adds a {@link DisplayItem} for each item in the {@link Collection}
      */
     public void addAllItems(Collection<? extends T> collection) {
-        int start = this.itemList.size();
         for (T item : collection) {
             this.addItem(item, false);
         }
-        int end = this.itemList.size() - 1;
-        //this.notifyItemRangeChanged(start, end);
         this.notifyDataSetChanged();
     }
 

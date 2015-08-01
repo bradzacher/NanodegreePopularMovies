@@ -49,7 +49,7 @@ public class DbColumn {
     }
 
     /**
-     * Creates an autoincrementing integer db column.
+     * Creates an auto incrementing integer db column.
      * @param name the name of the column
      * @param isPrimaryKey true if this column is a primary key, false otherwise
      */

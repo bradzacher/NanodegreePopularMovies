@@ -37,7 +37,6 @@ import au.com.zacher.popularmovies.contract.ContractCallback;
 import au.com.zacher.popularmovies.contract.DiscoverMoviesContract;
 import au.com.zacher.popularmovies.contract.MovieContract;
 import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
-import au.com.zacher.popularmovies.model.Movie;
 import au.com.zacher.popularmovies.model.MovieWithReleases;
 import au.com.zacher.popularmovies.model.SimpleMovie;
 import retrofit.Callback;
