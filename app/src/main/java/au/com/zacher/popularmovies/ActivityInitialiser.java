@@ -76,16 +76,33 @@ public final class ActivityInitialiser {
             toolbar.setOnClickListener((Toolbar.OnClickListener)activity);
         }*/
 
-        if (options.enableUpButton) {
-            actionbar.setDisplayHomeAsUpEnabled(true);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    activity.onBackPressed();
-                }
-            });
-        }
+        ActivityInitialiser.setToolbarOptions(activity, toolbar, options);
 
+        /*if (options != null) {
+            if (options.enableUpButton) {
+                actionbar.setDisplayHomeAsUpEnabled(true);
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        activity.onBackPressed();
+                    }
+                });
+            }
+        }*/
         return toolbar;
+    }
+
+    public static void setToolbarOptions(final Activity activity, Toolbar toolbar, ToolbarOptions options) {
+        if (options != null) {
+            if (options.enableUpButton) {
+                toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        activity.onBackPressed();
+                    }
+                });
+            }
+        }
     }
 }

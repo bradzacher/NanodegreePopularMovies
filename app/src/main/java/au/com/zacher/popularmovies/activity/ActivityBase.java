@@ -38,10 +38,10 @@ import butterknife.ButterKnife;
  * Created by Brad on 13/07/2015.
  */
 public abstract class ActivityBase extends AppCompatActivity {
-    @Bind(R.id.progress_bar)        protected ProgressBar progressBar;
-    @Bind(R.id.no_internet_section) protected View noInternetSection;
-    @Bind(R.id.retry_button)        protected Button loadRetryButton;
     @Bind(R.id.toolbar)             protected Toolbar toolbar;
+    public Toolbar getToolbar() {
+        return this.toolbar;
+    }
 
     protected void onCreate(Bundle savedInstanceState, ToolbarOptions options, int layoutId) {
         this.onCreate(savedInstanceState, options, layoutId, false);
@@ -69,34 +69,4 @@ public abstract class ActivityBase extends AppCompatActivity {
 
         ButterKnife.bind(this);
     }
-
-    public void setViewState(final ViewState state) {
-        Handler mainHandler = new Handler(this.getMainLooper());
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                switch(state) {
-                    case ERROR:
-                        ActivityBase.this.progressBar.setVisibility(View.GONE);
-                        ActivityBase.this.getMainViewItem().setVisibility(View.GONE);
-                        ActivityBase.this.noInternetSection.setVisibility(View.VISIBLE);
-                        break;
-
-                    case IN_PROGRESS:
-                        ActivityBase.this.progressBar.setVisibility(View.VISIBLE);
-                        ActivityBase.this.getMainViewItem().setVisibility(View.GONE);
-                        ActivityBase.this.noInternetSection.setVisibility(View.GONE);
-                        break;
-
-                    case SUCCESS:
-                        ActivityBase.this.progressBar.setVisibility(View.GONE);
-                        ActivityBase.this.getMainViewItem().setVisibility(View.VISIBLE);
-                        ActivityBase.this.noInternetSection.setVisibility(View.GONE);
-                        break;
-                }
-            }
-        });
-    }
-
-    public abstract View getMainViewItem();
 }

@@ -19,6 +19,7 @@ package au.com.zacher.popularmovies.adapter;
 import android.content.Context;
 
 import au.com.zacher.popularmovies.activity.MovieDetailsActivity;
+import au.com.zacher.popularmovies.activity.fragment.MovieDetailsFragment;
 import au.com.zacher.popularmovies.model.SimpleMovie;
 
 /**
@@ -56,11 +57,11 @@ public class SimpleMovieListAdapter extends DisplayItemListAdapter<SimpleMovie> 
 
     @Override
     protected String getIdIntentExtraString() {
-        return MovieDetailsActivity.KEY_MOVIE_ID;
+        return MovieDetailsFragment.KEY_MOVIE_ID;
     }
 
     @Override
     protected String getTitleIntentExtraString() {
-        return MovieDetailsActivity.KEY_MOVIE_TITLE;
+        return MovieDetailsFragment.KEY_MOVIE_TITLE;
     }
 }

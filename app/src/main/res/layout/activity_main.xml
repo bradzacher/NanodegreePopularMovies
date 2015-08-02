@@ -24,44 +24,11 @@
 
     <include layout="@layout/toolbar" />
 
-    <RelativeLayout
+    <fragment
+        android:id="@+id/movie_list_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/movie_grid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
-        <ProgressBar android:id="@id/progress_bar"
-                     android:layout_height="48dp"
-                     android:layout_width="48dp"
-                     android:layout_gravity="center"
-                     android:layout_centerInParent="true" />
-
-        <LinearLayout
-            android:id="@+id/no_internet_section"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical"
-            android:gravity="center_vertical|center_horizontal"
-            android:visibility="gone">
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/internet_error"
-                android:textSize="20sp"/>
-
-            <Button
-                android:id="@+id/retry_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/retry" />
-
-        </LinearLayout>
-
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:name="au.com.zacher.popularmovies.activity.fragment.MovieListFragment"
+        tools:layout="@layout/fragment_movie_list"/>
 
 </LinearLayout>

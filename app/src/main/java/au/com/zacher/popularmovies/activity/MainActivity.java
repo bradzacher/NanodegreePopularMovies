@@ -16,38 +16,22 @@
 
 package au.com.zacher.popularmovies.activity;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 
-import java.util.Arrays;
 import android.widget.Spinner;
 
 import au.com.zacher.popularmovies.Logger;
 import au.com.zacher.popularmovies.R;
 import au.com.zacher.popularmovies.ToolbarOptions;
 import au.com.zacher.popularmovies.Utilities;
-import au.com.zacher.popularmovies.adapter.SimpleMovieListAdapter;
-import au.com.zacher.popularmovies.api.Configuration;
-import au.com.zacher.popularmovies.contract.ConfigurationContract;
-import au.com.zacher.popularmovies.contract.ContractCallback;
-import au.com.zacher.popularmovies.contract.DiscoverMoviesContract;
-import au.com.zacher.popularmovies.model.SimpleMovie;
-import au.com.zacher.popularmovies.sync.SyncAdapter;
-import butterknife.Bind;
+import au.com.zacher.popularmovies.activity.fragment.MovieListFragment;
 
 
-public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClickListener, Spinner.OnItemSelectedListener {
-    @Bind(R.id.movie_grid) protected RecyclerView movieGrid;
-    private SimpleMovieListAdapter movieGridAdapter;
-    private boolean initialLoadDone;
+public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClickListener {
+    private MovieListFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,82 +39,7 @@ public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClic
         options.enableUpButton = false;
         super.onCreate(savedInstanceState, options, R.layout.activity_main);
 
-        Logger.logActionCreate("MainActivity");
-
-        // setup our periodic syncs
-        Utilities.addPeriodicSync(SyncAdapter.SYNC_TYPE_CONFIGURATION, Bundle.EMPTY, 1, Utilities.SyncInterval.DAY);
-
-        // fetch the pieces of the view
-        this.movieGridAdapter = new SimpleMovieListAdapter(this, R.layout.fragment_display_item);
-
-        // setup the display grid
-        this.movieGrid.setHasFixedSize(false);
-        this.movieGrid.setAdapter(this.movieGridAdapter);
-        this.movieGrid.setLayoutManager(new GridLayoutManager(this, 2));
-
-        // start the load
-        this.configurationLoad();
-    }
-    private void configurationLoad() {
-        this.setViewState(ViewState.IN_PROGRESS);
-
-        ConfigurationContract.getConfig(new ContractCallback<Configuration>() {
-            @Override
-            public void success(Configuration configuration) {
-                Utilities.initFromConfig(configuration);
-
-                // trigger the popular movies load
-                MainActivity.this.popularMoviesLoad();
-            }
-
-            @Override
-            public void failure(Exception error) {
-                // let the user know that we couldn't get any configuration (this should only ever happen if there is no internet connection on first load)
-                MainActivity.this.setViewState(ViewState.ERROR);
-
-                // and give them the option to retry
-                MainActivity.this.loadRetryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MainActivity.this.configurationLoad();
-                    }
-                });
-            }
-        });
-    }
-    private void popularMoviesLoad() {
-        this.setViewState(ViewState.IN_PROGRESS);
-        this.movieGridAdapter.clear();
-
-        DiscoverMoviesContract.getDiscoverMovies(new ContractCallback<SimpleMovie[]>() {
-            @Override
-            public void success(SimpleMovie[] movies) {
-                // show the list and add the loaded items
-                MainActivity.this.setViewState(ViewState.SUCCESS);
-                MainActivity.this.movieGridAdapter.addAllItems(Arrays.asList(movies));
-
-                MainActivity.this.initialLoadDone = true;
-            }
-
-            @Override
-            public void failure(Exception error) {
-                // let the user know that we couldn't get any configuration (this should only ever happen if there is no internet connection on first load)
-                MainActivity.this.setViewState(ViewState.ERROR);
-
-                // and give them the option to retry
-                MainActivity.this.loadRetryButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MainActivity.this.popularMoviesLoad();
-                    }
-                });
-            }
-        });
-    }
-
-    @Override
-    public View getMainViewItem() {
-        return this.movieGrid;
+        this.fragment = (MovieListFragment)this.getFragmentManager().findFragmentById(R.id.movie_list_fragment);
     }
 
     @Override
@@ -148,7 +57,7 @@ public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClic
         } else {
             spinner.setSelection(1, false);
         }
-        spinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(this.fragment);
 
         return true;
     }
@@ -168,30 +77,4 @@ public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClic
     public boolean onMenuItemClick(MenuItem item) {
         return this.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // this will attempt to
-        if (!this.initialLoadDone) {
-            return;
-        }
-
-        String item = (String)parent.getItemAtPosition(position);
-        String mostPopular = this.getString(R.string.pref_label_discovery_sort_order_most_popular);
-        String prefValue;
-        if (item.equals(mostPopular)) {
-            prefValue = this.getString(R.string.pref_label_discovery_sort_order_most_popular);
-        } else {
-            prefValue = this.getString(R.string.pref_label_discovery_sort_order_highest_rated);
-        }
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().putString(this.getString(R.string.pref_discovery_sort_order), prefValue).apply();
-
-        // reload the data
-        this.popularMoviesLoad();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) { }
 }

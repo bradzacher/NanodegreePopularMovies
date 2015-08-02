@@ -16,9 +16,7 @@
 
 package au.com.zacher.popularmovies.activity.fragment;
 
-import android.app.Activity;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,13 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-import java.util.List;
-
 import au.com.zacher.popularmovies.R;
-import au.com.zacher.popularmovies.activity.ViewState;
-import au.com.zacher.popularmovies.contract.ContractCallback;
-import au.com.zacher.popularmovies.contract.MovieContract;
-import au.com.zacher.popularmovies.model.Review;
 import butterknife.Bind;
 
 /**
@@ -42,14 +34,14 @@ import butterknife.Bind;
  * Use the {@link ReviewListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ReviewListFragment extends Fragment {
+public class ReviewListFragment extends FragmentBase {
     private static final String KEY_MOVIE_ID = "movie-id";
 
     private String movieId;
 
     private boolean hasLoadedReviews;
 
-    @Bind(R.id.root_view) RelativeLayout rootView;
+    @Bind(R.id.movie_reviews_list)  LinearLayout reviewList;
 
     /**
      * Use this factory method to create a new instance of
@@ -79,10 +71,8 @@ public class ReviewListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_review_list, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return super.onCreateView(R.layout.fragment_review_list, inflater, container, savedInstanceState);
     }
 
     /**
@@ -92,7 +82,7 @@ public class ReviewListFragment extends Fragment {
         if (!this.hasLoadedReviews) { // but don't bother with the check if we've already loaded the reviews
             Rect scrollBounds = new Rect();
             parent.getHitRect(scrollBounds);
-            if (this.rootView.getLocalVisibleRect(scrollBounds)) {
+            if (this.reviewList.getLocalVisibleRect(scrollBounds)) {
                 this.getReviews();
             }
         }
@@ -111,5 +101,10 @@ public class ReviewListFragment extends Fragment {
 
             }
         });*/
+    }
+
+    @Override
+    public View getMainViewItem() {
+        return this.reviewList;
     }
 }
