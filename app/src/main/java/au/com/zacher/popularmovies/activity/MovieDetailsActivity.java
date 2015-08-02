@@ -45,6 +45,7 @@ import au.com.zacher.popularmovies.Logger;
 import au.com.zacher.popularmovies.R;
 import au.com.zacher.popularmovies.ToolbarOptions;
 import au.com.zacher.popularmovies.Utilities;
+import au.com.zacher.popularmovies.activity.fragment.ReviewListFragment;
 import au.com.zacher.popularmovies.activity.layout.CollapsingTitleLayout;
 import au.com.zacher.popularmovies.contract.ContractCallback;
 import au.com.zacher.popularmovies.contract.MovieContract;
@@ -67,6 +68,7 @@ public class MovieDetailsActivity extends ActivityBase {
     @Bind(R.id.backdrop_toolbar_image)  protected ImageView collapsingTitleImage;
     @Bind(R.id.add_favourite_button)    protected Button addFavouriteButton;
     @Bind(R.id.movie_summary_list)      protected LinearLayout summaryList;
+    @Bind(R.id.movie_reviews_list)      protected ReviewListFragment reviewsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +136,9 @@ public class MovieDetailsActivity extends ActivityBase {
                 collapsingTitle.setScrollOffset(percent);
                 // tint the image on collapse cos it looks neat
                 collapsingTitleImage.setColorFilter(Color.argb((int) (170f * percent), toolbarColours[0], toolbarColours[1], toolbarColours[2]));
+
+                // check to see if the reviews section is scrolled in yet
+                MovieDetailsActivity.this.reviewsList.loadIfVisible(movieSummary);
             }
         });
 

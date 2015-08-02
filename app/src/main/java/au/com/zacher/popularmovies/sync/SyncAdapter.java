@@ -32,12 +32,14 @@ import au.com.zacher.popularmovies.api.Configuration;
 import au.com.zacher.popularmovies.api.TheMovieDbApi;
 import au.com.zacher.popularmovies.api.TheMovieDbService;
 import au.com.zacher.popularmovies.api.results.PagedResults;
+import au.com.zacher.popularmovies.api.results.RelatedPagedResults;
 import au.com.zacher.popularmovies.contract.ConfigurationContract;
 import au.com.zacher.popularmovies.contract.ContractCallback;
 import au.com.zacher.popularmovies.contract.DiscoverMoviesContract;
 import au.com.zacher.popularmovies.contract.MovieContract;
 import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
 import au.com.zacher.popularmovies.model.MovieWithReleases;
+import au.com.zacher.popularmovies.model.Review;
 import au.com.zacher.popularmovies.model.SimpleMovie;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -50,6 +52,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int SYNC_TYPE_CONFIGURATION = 0;
     public static final int SYNC_TYPE_DISCOVER_MOVIES = 1;
     public static final int SYNC_TYPE_GET_MOVIE = 2;
+    public static final int SYNC_TYPE_GET_MOVIE_REVIEWS = 3;
 
     public static final String KEY_SYNC_TYPE = "sync-type";
     public static final String KEY_DISCOVER_FILTER = "discover-filter";
@@ -81,6 +84,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             case SyncAdapter.SYNC_TYPE_GET_MOVIE:
                 stringType = "Get Movie";
                 break;
+
+            case SyncAdapter.SYNC_TYPE_GET_MOVIE_REVIEWS:
+                stringType = "Get Movie Reviews";
+                break;
         }
         Logger.v(R.string.log_sync_start, stringType);
         final String finalStringType = stringType;
@@ -92,7 +99,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 api.service.get(new Callback<Configuration>() {
                     @Override
                     public void success(Configuration configuration, Response response) {
-                        Logger.d(R.string.log_sync_end, finalStringType);
+                        SyncAdapter.LogSyncEnd(finalStringType);
 
                         ApiResultCacheHelper db = new ApiResultCacheHelper();
                         db.add(ConfigurationContract.TYPE, configuration);
@@ -104,7 +111,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Logger.e(R.string.log_api_error, error.getUrl(), error.getResponse().getStatus(), error.getMessage());
+                        SyncAdapter.LogApiError(error);
 
                         if (callback != null) {
                             callback.failure(error);
@@ -131,7 +138,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 api.service.getMovieList(map, new Callback<PagedResults<SimpleMovie>>() {
                     @Override
                     public void success(PagedResults<SimpleMovie> simpleMoviePagedResults, Response response) {
-                        Logger.d(R.string.log_sync_end, finalStringType);
+                        SyncAdapter.LogSyncEnd(finalStringType);
 
                         ApiResultCacheHelper db = new ApiResultCacheHelper();
                         String type = (isMostPopular) ? DiscoverMoviesContract.DISCOVER_MOVIES_MOST_POPULAR_TYPE : DiscoverMoviesContract.DISCOVER_MOVIES_HIGHEST_RATED_TYPE;
@@ -145,7 +152,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Logger.e(R.string.log_api_error, error.getUrl(), error.getResponse().getStatus(), error.getMessage());
+                        SyncAdapter.LogApiError(error);
 
                         if (callback != null) {
                             callback.failure(error);
@@ -163,10 +170,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 api.service.getMovieWithReleases(id, new Callback<MovieWithReleases>() {
                     @Override
                     public void success(MovieWithReleases movie, Response response) {
-                        Logger.d(R.string.log_sync_end, finalStringType);
+                        SyncAdapter.LogSyncEnd(finalStringType);
 
                         ApiResultCacheHelper db = new ApiResultCacheHelper();
-                        String type = MovieContract.MOVIES_TYPE + "_" + id;
+                        String type = MovieContract.MOVIES_DB_TYPE + "_" + id;
 
                         db.add(type, movie);
 
@@ -177,7 +184,39 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Logger.e(R.string.log_api_error, error.getUrl(), error.getResponse().getStatus(), error.getMessage());
+                        SyncAdapter.LogApiError(error);
+
+                        if (callback != null) {
+                            callback.failure(error);
+                        }
+                    }
+                });
+            }
+            break;
+
+            case SYNC_TYPE_GET_MOVIE_REVIEWS:
+            {
+                final String id = extras.getString(MovieContract.KEY_MOVIE_ID);
+
+                TheMovieDbApi<TheMovieDbService.MoviesService> api = new TheMovieDbApi<>(TheMovieDbService.MoviesService.class);
+                api.service.getMovieReviews(id, new Callback<RelatedPagedResults<Review>>() {
+                    @Override
+                    public void success(RelatedPagedResults<Review> reviewRelatedPagedResults, Response response) {
+                        SyncAdapter.LogSyncEnd(finalStringType);
+
+                        ApiResultCacheHelper db = new ApiResultCacheHelper();
+                        String type = MovieContract.REVIEWS_DB_TYPE + "_" + id;
+
+                        db.add(type, reviewRelatedPagedResults.results);
+
+                        if (callback != null) {
+                            callback.success(true);
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        SyncAdapter.LogApiError(error);
 
                         if (callback != null) {
                             callback.failure(error);
@@ -187,5 +226,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
             break;
         }
+    }
+
+    private static void LogSyncEnd(String type) {
+        Logger.d(R.string.log_sync_end, type);
+    }
+    private static void LogApiError(RetrofitError error) {
+        Logger.e(R.string.log_api_error, error.getUrl(), error.getResponse().getStatus(), error.getMessage());
     }
 }

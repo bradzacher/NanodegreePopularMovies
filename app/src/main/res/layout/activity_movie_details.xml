@@ -124,6 +124,12 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"/>
                 </LinearLayout>
+                <fragment
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/movie_reviews_list"
+                    android:name="au.com.zacher.popularmovies.activity.fragment.ReviewListFragment"
+                    tools:layout="@layout/fragment_review_list" />
             </LinearLayout>
         </ScrollView>
 

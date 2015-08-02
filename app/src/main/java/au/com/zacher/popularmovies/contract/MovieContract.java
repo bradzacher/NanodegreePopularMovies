@@ -23,21 +23,32 @@ import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.data.entry.ApiResultCacheEntry;
 import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
 import au.com.zacher.popularmovies.model.MovieWithReleases;
+import au.com.zacher.popularmovies.model.Review;
 import au.com.zacher.popularmovies.sync.SyncAdapter;
 
 /**
  * Created by Brad on 12/07/2015.
  */
 public final class MovieContract {
-    public static final String MOVIES_TYPE = "movie_";
+    public static final String MOVIES_DB_TYPE = "movie_";
+    public static final String REVIEWS_DB_TYPE = "reviews_";
     public static final String KEY_MOVIE_ID = "movie-id";
 
+    private static final long fiveMinutesInMS = 1000L * 60L * 5L;
+
     public static void getMovie(final String id, final ContractCallback<MovieWithReleases> callback) {
-        // attempt to load from the provider first
-        loadFromProvider(id, new ContractCallback<MovieWithReleases>() {
+        attemptLoadFromProviderThenInternet(id, MovieContract.MOVIES_DB_TYPE, SyncAdapter.SYNC_TYPE_GET_MOVIE, MovieWithReleases.class, callback);
+    }
+
+    public static void getReviews(final String id, final ContractCallback<Review[]> callback) {
+        attemptLoadFromProviderThenInternet(id, MovieContract.REVIEWS_DB_TYPE, SyncAdapter.SYNC_TYPE_GET_MOVIE_REVIEWS, Review[].class, callback);
+    }
+
+    private static <T> void attemptLoadFromProviderThenInternet(final String id, final String dbType, final int syncType, final Class tClass, final ContractCallback<T> callback) {
+        loadFromProvider(id, dbType, tClass, new ContractCallback<T>() {
             @Override
-            public void success(MovieWithReleases movies) {
-                callback.success(movies);
+            public void success(T result) {
+                callback.success(result);
             }
 
             @Override
@@ -45,11 +56,11 @@ public final class MovieContract {
                 // attempt to force a sync
                 if (Utilities.isConnected()) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(KEY_MOVIE_ID, id);
-                    SyncAdapter.immediateSync(SyncAdapter.SYNC_TYPE_GET_MOVIE, bundle, new ContractCallback<Boolean>() {
+                    bundle.putString(MovieContract.KEY_MOVIE_ID, id);
+                    SyncAdapter.immediateSync(syncType, bundle, new ContractCallback<Boolean>() {
                         @Override
                         public void success(Boolean result) {
-                            loadFromProvider(id, callback);
+                            loadFromProvider(id, dbType, tClass, callback);
                         }
 
                         @Override
@@ -64,10 +75,10 @@ public final class MovieContract {
         });
     }
 
-    private static void loadFromProvider(String id, ContractCallback<MovieWithReleases> callback) {
+    private static <T> void loadFromProvider(String id, String dbType, Class tClass, ContractCallback<T> callback) {
         ApiResultCacheHelper provider = new ApiResultCacheHelper();
 
-        Cursor cursor = provider.get(MOVIES_TYPE + "_" + id);
+        Cursor cursor = provider.get(dbType + "_" + id);
 
         if (cursor == null || cursor.getCount() == 0) {
             callback.failure(new Exception("No data in provider"));
@@ -76,8 +87,9 @@ public final class MovieContract {
         cursor.moveToFirst();
 
         // five minutes ago
-        if (!ApiResultCacheEntry.isOlderThan(cursor, 1000L * 60L * 5L) || !Utilities.isConnected()) {
-            MovieWithReleases results = (MovieWithReleases) ApiResultCacheEntry.getObjectFromRow(cursor, MovieWithReleases.class);
+        if (!ApiResultCacheEntry.isOlderThan(cursor, MovieContract.fiveMinutesInMS) || !Utilities.isConnected()) {
+            //noinspection unchecked
+            T results = (T) ApiResultCacheEntry.getObjectFromRow(cursor, tClass);
             callback.success(results);
         } else {
             callback.failure(new Exception("Data too old"));
