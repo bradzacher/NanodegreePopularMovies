@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import au.com.zacher.popularmovies.R;
 import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.model.DisplayItem;
 import au.com.zacher.popularmovies.model.DisplayItemViewHolder;
@@ -106,8 +107,6 @@ public abstract class DisplayItemListAdapter<T> extends RecyclerView.Adapter<Dis
     public DisplayItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(this.itemViewResourceId, parent, false);
         view.setOnClickListener(this);
-        // enforce the correct size for the screen
-        view.setLayoutParams(new RelativeLayout.LayoutParams(Utilities.getPosterWidth(), Utilities.getPosterHeight()));
         return new DisplayItemViewHolder(view);
     }
 

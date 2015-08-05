@@ -20,8 +20,6 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <!-- TODO: styling -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,30 +27,4 @@
         android:contentDescription="@string/content_description_item"
         android:src="@drawable/ic_error_outline_black_48dp"
         android:layout_centerInParent="true" />
-
-    <!--
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:id="@id/display_item_title"
-            android:text="@string/main_activity_item_placeholder"
-            android:textColor="#000000"
-            android:paddingLeft="16dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:id="@id/display_item_subtitle"
-            android:text="@string/main_activity_item_placeholder"
-            android:textColor="#000000"
-            android:paddingLeft="16dp" />
-    </LinearLayout>
-    -->
 </RelativeLayout>

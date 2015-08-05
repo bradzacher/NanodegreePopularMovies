@@ -71,7 +71,7 @@ public class MovieListFragment extends FragmentBase implements Spinner.OnItemSel
         Utilities.addPeriodicSync(SyncAdapter.SYNC_TYPE_CONFIGURATION, Bundle.EMPTY, 1, Utilities.SyncInterval.DAY);
 
         // fetch the pieces of the view
-        this.movieGridAdapter = new SimpleMovieListAdapter(this.parent, R.layout.fragment_display_item);
+        this.movieGridAdapter = new SimpleMovieListAdapter(this.parent, R.layout.fragment_single_movie_poster);
 
         // setup the display grid
         this.movieGrid.setHasFixedSize(false);

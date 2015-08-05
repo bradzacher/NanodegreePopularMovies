@@ -47,10 +47,10 @@
     </style>
 
     <style name="CardTitle">
+        <item name="android:textSize">24sp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">24sp</item>
         <item name="android:paddingBottom">16dp</item>
     </style>
     <style name="MovieDetails_Tagline_Text">
@@ -73,4 +73,7 @@
         <item name="android:layout_weight">0.5</item>
     </style>
 
+    <style name="ReviewAuthor" parent="@style/CardTitle">
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

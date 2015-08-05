@@ -23,10 +23,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import au.com.zacher.popularmovies.R;
+import au.com.zacher.popularmovies.activity.ViewState;
+import au.com.zacher.popularmovies.contract.ContractCallback;
+import au.com.zacher.popularmovies.contract.MovieContract;
+import au.com.zacher.popularmovies.model.Review;
 import butterknife.Bind;
 
 /**
@@ -41,7 +45,9 @@ public class ReviewListFragment extends FragmentBase {
 
     private boolean hasLoadedReviews;
 
-    @Bind(R.id.movie_reviews_list)  LinearLayout reviewList;
+    @Bind(R.id.root_view) View rootView;
+    @Bind(R.id.movie_reviews_list) LinearLayout reviewList;
+    @Bind(R.id.no_reviews_text) TextView noResultsText;
 
     /**
      * Use this factory method to create a new instance of
@@ -79,28 +85,48 @@ public class ReviewListFragment extends FragmentBase {
      * Checks if the view is at least a little bit visible and will load the reviews
      */
     public void loadIfVisible(ScrollView parent) {
-        if (!this.hasLoadedReviews) { // but don't bother with the check if we've already loaded the reviews
+        if (!this.hasLoadedReviews) { // don't bother with the check if we've already loaded the reviews
             Rect scrollBounds = new Rect();
             parent.getHitRect(scrollBounds);
-            if (this.reviewList.getLocalVisibleRect(scrollBounds)) {
+            if (this.rootView.getLocalVisibleRect(scrollBounds)) {
                 this.getReviews();
             }
         }
     }
     private void getReviews() {
-        // TODO
-        /*this.setViewState(ViewState.IN_PROGRESS);
-        MovieContract.getReviews(this.movieId, new ContractCallback<List<Review>>() {
-            @Override
-            public void success(List<Review> result) {
+        // mark that we've at least tried
+        ReviewListFragment.this.hasLoadedReviews = true;
 
+        this.setViewState(ViewState.IN_PROGRESS);
+        MovieContract.getReviews(this.movieId, new ContractCallback<Review[]>() {
+            @Override
+            public void success(Review[] result) {
+                ReviewListFragment.this.setViewState(ViewState.SUCCESS);
+
+                if (result.length != 0) {
+                    LayoutInflater inflater = LayoutInflater.from(ReviewListFragment.this.parent);
+                    for (Review review : result) {
+                        View v = inflater.inflate(R.layout.fragment_single_review, ReviewListFragment.this.reviewList, false);
+                        ((TextView) v.findViewById(R.id.display_item_title)).setText(review.author);
+                        ((TextView) v.findViewById(R.id.display_item_subtitle)).setText(review.content);
+                        ReviewListFragment.this.reviewList.addView(v);
+                    }
+                } else {
+                    ReviewListFragment.this.noResultsText.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void failure(Exception e) {
-
+                ReviewListFragment.this.setViewState(ViewState.ERROR);
+                ReviewListFragment.this.loadRetryButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ReviewListFragment.this.getReviews();
+                    }
+                });
             }
-        });*/
+        });
     }
 
     @Override
