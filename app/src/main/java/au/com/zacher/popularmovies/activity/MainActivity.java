@@ -50,12 +50,12 @@ public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClic
         this.getLayoutInflater().inflate(R.layout.fragment_sort_order_menu, this.toolbar);
         Spinner spinner = (Spinner)this.toolbar.findViewById(R.id.sort_order_menu);
         // set the selected item to be the user preference
-        String item0 = (String)spinner.getItemAtPosition(0);
         String currentPref = Utilities.getPreference(R.string.pref_discovery_sort_order, R.string.pref_default_discovery_sort_order);
-        if (item0.equals(currentPref)) {
-            spinner.setSelection(0, false);
-        } else {
-            spinner.setSelection(1, false);
+        for (int i = 0; i < spinner.getAdapter().getCount(); i++) {
+            String itemText = (String)spinner.getItemAtPosition(i);
+            if (itemText.equals(currentPref)) {
+                spinner.setSelection(i, false);
+            }
         }
         spinner.setOnItemSelectedListener(this.fragment);
 

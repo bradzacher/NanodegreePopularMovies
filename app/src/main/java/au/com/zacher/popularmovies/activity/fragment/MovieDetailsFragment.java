@@ -25,7 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -50,6 +50,7 @@ import au.com.zacher.popularmovies.activity.ViewState;
 import au.com.zacher.popularmovies.activity.layout.CollapsingTitleLayout;
 import au.com.zacher.popularmovies.contract.ContractCallback;
 import au.com.zacher.popularmovies.contract.MovieContract;
+import au.com.zacher.popularmovies.data.helper.FavouriteHelper;
 import au.com.zacher.popularmovies.model.MovieWithReleases;
 import au.com.zacher.popularmovies.model.Release;
 import butterknife.Bind;
@@ -66,9 +67,15 @@ public class MovieDetailsFragment extends FragmentBase {
     @Bind(R.id.movie_summary)           protected ScrollView movieSummary;
     @Bind(R.id.backdrop_toolbar)        protected CollapsingTitleLayout collapsingTitle;
     @Bind(R.id.backdrop_toolbar_image)  protected ImageView collapsingTitleImage;
-    @Bind(R.id.add_favourite_button)    protected Button addFavouriteButton;
+    @Bind(R.id.add_favourite_button)    protected ImageButton addFavouriteButton;
     @Bind(R.id.movie_summary_list)      protected LinearLayout summaryList;
     @Bind(R.id.toolbar)                 protected Toolbar toolbar;
+
+    /**
+     * The specific movie details
+     */
+    private MovieWithReleases movieObject;
+
     public Toolbar getToolbar() {
         return this.toolbar;
     }
@@ -117,12 +124,15 @@ public class MovieDetailsFragment extends FragmentBase {
                 .replace(R.id.movie_reviews_list, this.reviewsList)
                 .commit();
 
-        // attach button listeners
+        if (new FavouriteHelper().isFavourite(this.movieId)) {
+            // make sure the button looks right
+            this.addFavouriteButton.setImageResource(R.drawable.ic_favorite_black_36dp);
+        }
+        // attach button listener
         this.addFavouriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO - favourite movie (assignment 2)
-                Toast.makeText(MovieDetailsFragment.this.parent, "Feature Not Implemented.", Toast.LENGTH_SHORT).show();
+                MovieDetailsFragment.this.favouriteButtonOnClick();
             }
         });
 
@@ -214,6 +224,8 @@ public class MovieDetailsFragment extends FragmentBase {
      * Sets the data from the given movie into the view
      */
     private void setMovie(MovieWithReleases result) {
+        this.movieObject = result;
+
         TextView voteCountText = (TextView)this.rootView.findViewById(R.id.movie_vote_count);
         TextView voteAverageText = (TextView)this.rootView.findViewById(R.id.movie_vote_average);
         TextView plotSynopsisText = (TextView)this.rootView.findViewById(R.id.movie_plot_synopsis);
@@ -312,6 +324,20 @@ public class MovieDetailsFragment extends FragmentBase {
         }
     }
 
+    /**
+     * Called when the favourite button is clicked
+     * @param v
+     */
+    private void favouriteButtonOnClick() {
+        FavouriteHelper db = new FavouriteHelper();
+        if (db.isFavourite(this.movieId)) {
+            this.addFavouriteButton.setImageResource(R.drawable.ic_favorite_border_black_36dp);
+            db.remove(this.movieId);
+        } else {
+            this.addFavouriteButton.setImageResource(R.drawable.ic_favorite_black_36dp);
+            db.add(this.movieId, this.movieObject.poster_path);
+        }
+    }
 
     @Override
     public View getMainViewItem() {

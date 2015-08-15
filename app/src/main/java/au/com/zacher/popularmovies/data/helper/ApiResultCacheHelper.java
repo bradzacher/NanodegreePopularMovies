@@ -33,7 +33,7 @@ import au.com.zacher.popularmovies.data.entry.ApiResultCacheEntry;
  */
 public class ApiResultCacheHelper extends DbHelper {
     public ApiResultCacheHelper() {
-        super(Utilities.getApplicationContext());
+        this(Utilities.getApplicationContext());
     }
     public ApiResultCacheHelper(Context context) {
         super(context);

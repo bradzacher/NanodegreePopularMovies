@@ -16,14 +16,10 @@
 
 package au.com.zacher.popularmovies.data.entry;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
-import com.google.gson.Gson;
-
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,23 +27,24 @@ import au.com.zacher.popularmovies.data.ColumnType;
 import au.com.zacher.popularmovies.data.DbColumn;
 
 /**
- * Created by Brad on 10/07/2015.
+ * Created by Brad on 15/08/2015.
  */
-public class ApiResultCacheEntry extends DbEntry {
-    public static final String TABLE_NAME = "api_result_cache";
+public class FavouriteEntry extends DbEntry {
+    public static final String TABLE_NAME = "favourites";
+
 
     public static final Map<String, DbColumn> columns;
     static {
         DbColumn col;
         Map<String, DbColumn> map = new HashMap<>();
 
-        col = new DbColumn("type", ColumnType.TEXT, true);
-        COLUMN_TYPE = col;
-        map.put("COLUMN_TYPE", col);
+        col = new DbColumn("item_id", ColumnType.TEXT, true);
+        COLUMN_ITEM_ID = col;
+        map.put("COLUMN_ITEM_ID", col);
 
-        col = new DbColumn("json", ColumnType.TEXT);
-        COLUMN_JSON = col;
-        map.put("COLUMN_JSON", col);
+        col = new DbColumn("item_image", ColumnType.TEXT, false);
+        COLUMN_POSTER_PATH = col;
+        map.put("COLUMN_POSTER_PATH", col);
 
         col = new DbColumn("date", ColumnType.INTEGER);
         COLUMN_DATE = col;
@@ -57,14 +54,14 @@ public class ApiResultCacheEntry extends DbEntry {
     }
 
     /**
-     * The type of result
+     * The id of the item (from movie db's API)
      */
-    public static final DbColumn COLUMN_TYPE;
+    public static final DbColumn COLUMN_ITEM_ID;
 
     /**
-     * The json representation of the result
+     * The path to the item's poster (for convenience loading later)
      */
-    public static final DbColumn COLUMN_JSON;
+    public static final DbColumn COLUMN_POSTER_PATH;
 
     /**
      * The date the result was obtained
@@ -82,32 +79,16 @@ public class ApiResultCacheEntry extends DbEntry {
             db.execSQL(this.basicDropTable());
         } catch (SQLiteException ignored) { }
         this.createTable(db);
+        // TODO - make sure that this gets updated if I ever change th table structure so that
     }
 
     @Override
     public String getTableName() {
-        return ApiResultCacheEntry.TABLE_NAME;
+        return FavouriteEntry.TABLE_NAME;
     }
 
     @Override
     public Map<String, DbColumn> getColumns() {
-        return ApiResultCacheEntry.columns;
-    }
-
-    /**
-     * Gets the object data from a cursor row (doesn't perform any checks on the cursor)
-     */
-    public static Object getObjectFromRow(Cursor cur, Class type) {
-        Gson gson = new Gson();
-        return gson.fromJson(cur.getString(cur.getColumnIndex(ApiResultCacheEntry.COLUMN_JSON.name)), type);
-    }
-
-    /**
-     * Checks if the cursor row is older than the given age (doesn't perform any checks on the cursor)
-     */
-    public static boolean isOlderThan(Cursor cur, long age) {
-        long insertedTimeStamp = cur.getLong(cur.getColumnIndex(ApiResultCacheEntry.COLUMN_DATE.name));
-        long timeAgo = (new Date().getTime()) - age;
-        return (timeAgo - insertedTimeStamp) > 0;
+        return FavouriteEntry.columns;
     }
 }
