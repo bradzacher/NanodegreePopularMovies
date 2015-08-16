@@ -33,11 +33,13 @@ import au.com.zacher.popularmovies.api.TheMovieDbApi;
 import au.com.zacher.popularmovies.api.TheMovieDbService;
 import au.com.zacher.popularmovies.api.results.PagedResults;
 import au.com.zacher.popularmovies.api.results.RelatedPagedResults;
+import au.com.zacher.popularmovies.api.results.RelatedResults;
 import au.com.zacher.popularmovies.contract.ConfigurationContract;
 import au.com.zacher.popularmovies.contract.ContractCallback;
 import au.com.zacher.popularmovies.contract.DiscoverMoviesContract;
 import au.com.zacher.popularmovies.contract.MovieContract;
 import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
+import au.com.zacher.popularmovies.model.MovieVideo;
 import au.com.zacher.popularmovies.model.MovieWithReleases;
 import au.com.zacher.popularmovies.model.Review;
 import au.com.zacher.popularmovies.model.SimpleMovie;
@@ -53,6 +55,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int SYNC_TYPE_DISCOVER_MOVIES = 1;
     public static final int SYNC_TYPE_GET_MOVIE = 2;
     public static final int SYNC_TYPE_GET_MOVIE_REVIEWS = 3;
+    public static final int SYNC_TYPE_GET_MOVIE_VIDEOS = 4;
 
     public static final String KEY_SYNC_TYPE = "sync-type";
     public static final String KEY_DISCOVER_FILTER = "discover-filter";
@@ -87,6 +90,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             case SyncAdapter.SYNC_TYPE_GET_MOVIE_REVIEWS:
                 stringType = "Get Movie Reviews";
+                break;
+
+            case SyncAdapter.SYNC_TYPE_GET_MOVIE_VIDEOS:
+                stringType = "Get Movie Videos";
                 break;
         }
         Logger.v(R.string.log_sync_start, stringType);
@@ -208,6 +215,38 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                         String type = MovieContract.REVIEWS_DB_TYPE + "_" + id;
 
                         db.add(type, reviewRelatedPagedResults.results);
+
+                        if (callback != null) {
+                            callback.success(true);
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        SyncAdapter.LogApiError(error);
+
+                        if (callback != null) {
+                            callback.failure(error);
+                        }
+                    }
+                });
+            }
+            break;
+
+            case SYNC_TYPE_GET_MOVIE_VIDEOS:
+            {
+                final String id = extras.getString(MovieContract.KEY_MOVIE_ID);
+
+                TheMovieDbApi<TheMovieDbService.MoviesService> api = new TheMovieDbApi<>(TheMovieDbService.MoviesService.class);
+                api.service.getMovieVideos(id, new Callback<RelatedResults<MovieVideo>>() {
+                    @Override
+                    public void success(RelatedResults<MovieVideo> videoRelatedPagedResults, Response response) {
+                        SyncAdapter.LogSyncEnd(finalStringType);
+
+                        ApiResultCacheHelper db = new ApiResultCacheHelper();
+                        String type = MovieContract.VIDEOS_DB_TYPE + "_" + id;
+
+                        db.add(type, videoRelatedPagedResults.results);
 
                         if (callback != null) {
                             callback.success(true);

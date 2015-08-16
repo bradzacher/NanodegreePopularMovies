@@ -28,9 +28,9 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -70,6 +70,7 @@ public class MovieDetailsFragment extends FragmentBase {
     @Bind(R.id.add_favourite_button)    protected ImageButton addFavouriteButton;
     @Bind(R.id.movie_summary_list)      protected LinearLayout summaryList;
     @Bind(R.id.toolbar)                 protected Toolbar toolbar;
+    @Bind(R.id.loading_ui_wrapper)      protected RelativeLayout loadingUiWrapper;
 
     /**
      * The specific movie details
@@ -80,6 +81,7 @@ public class MovieDetailsFragment extends FragmentBase {
         return this.toolbar;
     }
     private ReviewListFragment reviewsList;
+    private TrailerListFragment trailerList;
 
     /**
      * This shouldn't be called anywhere publicly
@@ -103,6 +105,10 @@ public class MovieDetailsFragment extends FragmentBase {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View retView = super.onCreateView(R.layout.fragment_movie_details, inflater, container, savedInstanceState);
 
+        // offset the loading fragment so it appears below the expanded title bar
+        RelativeLayout.LayoutParams loadingUiWrapperLayoutParams = (RelativeLayout.LayoutParams) this.loadingUiWrapper.getLayoutParams();
+        loadingUiWrapperLayoutParams.topMargin = Utilities.getBackdropHeight();
+
         Logger.logActionCreate("MainActivity");
 
         // check the parent to see if we want a back button
@@ -122,6 +128,12 @@ public class MovieDetailsFragment extends FragmentBase {
         this.reviewsList = ReviewListFragment.newInstance(this.movieId);
         this.getFragmentManager().beginTransaction()
                 .replace(R.id.movie_reviews_list, this.reviewsList)
+                .commit();
+
+        // create the trailer list fragment
+        this.trailerList = TrailerListFragment.newInstance(this.movieId);
+        this.getFragmentManager().beginTransaction()
+                .replace(R.id.movie_videos_list, this.trailerList)
                 .commit();
 
         if (new FavouriteHelper().isFavourite(this.movieId)) {
@@ -188,6 +200,8 @@ public class MovieDetailsFragment extends FragmentBase {
             public void onScrollChanged() {
                 // check to see if the reviews section is scrolled in yet
                 MovieDetailsFragment.this.reviewsList.loadIfVisible(MovieDetailsFragment.this.movieSummary);
+                // check to see if the reviews section is scrolled in yet
+                MovieDetailsFragment.this.trailerList.loadIfVisible(MovieDetailsFragment.this.movieSummary);
             }
         });
 
@@ -326,7 +340,6 @@ public class MovieDetailsFragment extends FragmentBase {
 
     /**
      * Called when the favourite button is clicked
-     * @param v
      */
     private void favouriteButtonOnClick() {
         FavouriteHelper db = new FavouriteHelper();

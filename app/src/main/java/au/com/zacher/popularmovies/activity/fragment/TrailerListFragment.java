@@ -17,6 +17,8 @@
 package au.com.zacher.popularmovies.activity.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -26,7 +28,7 @@ import au.com.zacher.popularmovies.R;
 import au.com.zacher.popularmovies.activity.ViewState;
 import au.com.zacher.popularmovies.contract.ContractCallback;
 import au.com.zacher.popularmovies.contract.MovieContract;
-import au.com.zacher.popularmovies.model.Review;
+import au.com.zacher.popularmovies.model.MovieVideo;
 import butterknife.Bind;
 
 /**
@@ -34,8 +36,8 @@ import butterknife.Bind;
  * Use the {@link ReviewListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ReviewListFragment extends DetailsSubListFragment {
-    @Bind(R.id.movie_reviews_list) LinearLayout reviewList;
+public class TrailerListFragment extends DetailsSubListFragment {
+    @Bind(R.id.movie_trailer_list) LinearLayout trailerList;
 
     /**
      * Use this factory method to create a new instance of
@@ -44,30 +46,38 @@ public class ReviewListFragment extends DetailsSubListFragment {
      * @param movieId The id of the movie to get reviews for
      * @return A new instance of fragment ReviewListFragment.
      */
-    public static ReviewListFragment newInstance(String movieId) {
-        ReviewListFragment fragment = new ReviewListFragment();
+    public static TrailerListFragment newInstance(String movieId) {
+        TrailerListFragment fragment = new TrailerListFragment();
         DetailsSubListFragment.newInstance(movieId, fragment);
         return fragment;
     }
 
-    public ReviewListFragment() {
+    public TrailerListFragment() {
         super();
     }
 
     @Override
     protected void getData(final ContractCallback<Boolean> callback) {
-        MovieContract.getReviews(this.movieId, new ContractCallback<Review[]>() {
+        MovieContract.getVideos(this.movieId, new ContractCallback<MovieVideo[]>() {
             @Override
-            public void success(Review[] result) {
-                ReviewListFragment.this.setViewState(ViewState.SUCCESS);
+            public void success(MovieVideo[] result) {
+                TrailerListFragment.this.setViewState(ViewState.SUCCESS);
 
                 if (result.length != 0) {
-                    LayoutInflater inflater = LayoutInflater.from(ReviewListFragment.this.parent);
-                    for (Review review : result) {
-                        View v = inflater.inflate(R.layout.fragment_single_review, ReviewListFragment.this.reviewList, false);
-                        ((TextView) v.findViewById(R.id.display_item_title)).setText(review.author);
-                        ((TextView) v.findViewById(R.id.display_item_subtitle)).setText(review.content);
-                        ReviewListFragment.this.reviewList.addView(v);
+                    LayoutInflater inflater = LayoutInflater.from(TrailerListFragment.this.parent);
+                    for (final MovieVideo video : result) {
+                        View v = inflater.inflate(R.layout.fragment_single_trailer, TrailerListFragment.this.trailerList, false);
+                        ((TextView) v.findViewById(R.id.display_item_title)).setText(video.name);
+                        TrailerListFragment.this.trailerList.addView(v);
+
+                        // when the user taps - open the video
+                        v.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                TrailerListFragment.this.startActivity(new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse("http://www.youtube.com/watch?v=" + video.key)));
+                            }
+                        });
                     }
                     callback.success(true);
                 } else {
@@ -84,11 +94,11 @@ public class ReviewListFragment extends DetailsSubListFragment {
 
     @Override
     public View getMainViewItem() {
-        return this.reviewList;
+        return this.trailerList;
     }
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_review_list;
+        return R.layout.fragment_trailer_list;
     }
 }

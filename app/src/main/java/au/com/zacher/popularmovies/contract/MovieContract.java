@@ -22,6 +22,7 @@ import android.os.Bundle;
 import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.data.entry.ApiResultCacheEntry;
 import au.com.zacher.popularmovies.data.helper.ApiResultCacheHelper;
+import au.com.zacher.popularmovies.model.MovieVideo;
 import au.com.zacher.popularmovies.model.MovieWithReleases;
 import au.com.zacher.popularmovies.model.Review;
 import au.com.zacher.popularmovies.sync.SyncAdapter;
@@ -32,6 +33,7 @@ import au.com.zacher.popularmovies.sync.SyncAdapter;
 public final class MovieContract {
     public static final String MOVIES_DB_TYPE = "movie_";
     public static final String REVIEWS_DB_TYPE = "reviews_";
+    public static final String VIDEOS_DB_TYPE = "videos_";
     public static final String KEY_MOVIE_ID = "movie-id";
 
     private static final long fiveMinutesInMS = 1000L * 60L * 5L;
@@ -42,6 +44,10 @@ public final class MovieContract {
 
     public static void getReviews(final String id, final ContractCallback<Review[]> callback) {
         attemptLoadFromProviderThenInternet(id, MovieContract.REVIEWS_DB_TYPE, SyncAdapter.SYNC_TYPE_GET_MOVIE_REVIEWS, Review[].class, callback);
+    }
+
+    public static void getVideos(final String id, final ContractCallback<MovieVideo[]> callback) {
+        attemptLoadFromProviderThenInternet(id, MovieContract.VIDEOS_DB_TYPE, SyncAdapter.SYNC_TYPE_GET_MOVIE_VIDEOS, MovieVideo[].class, callback);
     }
 
     private static <T> void attemptLoadFromProviderThenInternet(final String id, final String dbType, final int syncType, final Class tClass, final ContractCallback<T> callback) {

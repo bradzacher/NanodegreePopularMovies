@@ -44,6 +44,9 @@
     <string name="movie_details_activity_summary_budget">Budget</string>
     <string name="movie_details_activity_reviews_title">Reviews</string>
     <string name="movie_details_activity_reviews_no_reviews">No Reviews</string>
+    <string name="movie_details_activity_trailers_title">Trailers</string>
+    <string name="movie_details_activity_trailers_no_trailers">No Trailers</string>
+    <string name="movie_details_activity_trailers_play">Play Trailer</string>
 
     <!-- Logging strings -->
     <string name="log_tag" translatable="false">@string/app_name</string>

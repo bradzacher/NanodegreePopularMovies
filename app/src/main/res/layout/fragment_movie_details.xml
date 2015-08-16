@@ -23,7 +23,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false">
-    <include layout="@layout/fragment_loading_ui" />
+    <RelativeLayout
+        android:id="@+id/loading_ui_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/fragment_loading_ui" />
+    </RelativeLayout>
 
     <ScrollView
         android:id="@+id/movie_summary"
@@ -62,6 +67,11 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eget vehicula felis, a egestas elit. Etiam accumsan, turpis ut facilisis dictum, elit mi semper enim, sed suscipit urna leo ut metus. Morbi dapibus nibh libero, eu volutpat mauris convallis ac. Nullam quis cursus enim. Cras porttitor arcu a tempor malesuada" />
+            <!-- This is just a placeholder for the videos fragment, which needs to be dynamically created -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/movie_videos_list" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -132,6 +142,7 @@
                 android:id="@+id/movie_reviews_list" />
         </LinearLayout>
     </ScrollView>
+
     <au.com.zacher.popularmovies.activity.layout.CollapsingTitleLayout
         android:id="@+id/backdrop_toolbar"
         android:layout_width="match_parent"

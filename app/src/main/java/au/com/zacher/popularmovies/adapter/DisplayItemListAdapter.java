@@ -134,8 +134,9 @@ public abstract class DisplayItemListAdapter<T> extends RecyclerView.Adapter<Dis
             return;
         }
 
-        String id = this.getItem(position).id;
-        String title = this.getItem(position).title;
+        DisplayItem item = this.getItem(position);
+        String id = item.id;
+        String title = item.title;
         if (id != null) {
             // open the required view
             Intent i = new Intent(this.context, clickActivityClass)

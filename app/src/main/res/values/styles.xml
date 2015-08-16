@@ -76,4 +76,8 @@
     <style name="ReviewAuthor" parent="@style/CardTitle">
         <item name="android:textSize">18sp</item>
     </style>
+    <style name="TrailerTitle" parent="@style/CardTitle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
 </resources>
