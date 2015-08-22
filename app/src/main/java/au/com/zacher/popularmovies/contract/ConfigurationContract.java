@@ -76,7 +76,6 @@ public final class ConfigurationContract {
             if (cursor == null || cursor.getCount() == 0) {
                 callback.failure(new Exception("No data in provider"));
                 db.close();
-                cursor.close();
                 return;
             }
             cursor.moveToFirst();

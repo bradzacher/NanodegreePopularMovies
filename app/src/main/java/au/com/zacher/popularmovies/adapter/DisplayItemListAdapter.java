@@ -22,13 +22,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import au.com.zacher.popularmovies.R;
-import au.com.zacher.popularmovies.Utilities;
+import au.com.zacher.popularmovies.activity.ActivityBase;
+import au.com.zacher.popularmovies.activity.fragment.FragmentBase;
 import au.com.zacher.popularmovies.model.DisplayItem;
 import au.com.zacher.popularmovies.model.DisplayItemViewHolder;
 
@@ -39,7 +41,7 @@ public abstract class DisplayItemListAdapter<T> extends RecyclerView.Adapter<Dis
     private final int itemViewResourceId;
     private final Context context;
 
-    private ArrayList<DisplayItem> itemList = new ArrayList<>();
+    private final ArrayList<DisplayItem> itemList = new ArrayList<>();
 
     public DisplayItemListAdapter(Context context, int itemViewResourceId) {
         super();
@@ -128,8 +130,9 @@ public abstract class DisplayItemListAdapter<T> extends RecyclerView.Adapter<Dis
      * Attempts to launch the {@link android.app.Activity} defined by {@link DisplayItemListAdapter#getClickActivityClass()} when an item is clicked
      */
     private void onItemClick(int position) {
-        Class clickActivityClass = this.getClickActivityClass();
-        if (clickActivityClass == null) {
+        Class<? extends ActivityBase> clickActivityClass = this.getClickActivityClass();
+        Class<? extends FragmentBase> clickFragmentClass = this.getClickFragmentClass();
+        if (clickActivityClass == null && clickFragmentClass == null) {
             // do nothing if the implementor has not specified a click class
             return;
         }
@@ -138,11 +141,27 @@ public abstract class DisplayItemListAdapter<T> extends RecyclerView.Adapter<Dis
         String id = item.id;
         String title = item.title;
         if (id != null) {
-            // open the required view
-            Intent i = new Intent(this.context, clickActivityClass)
-                    .putExtra(this.getIdIntentExtraString(), id)
-                    .putExtra(this.getTitleIntentExtraString(), title);
-            this.getContext().startActivity(i);
+            ActivityBase parentActivity = ((ActivityBase)this.getContext());
+            if (parentActivity.findViewById(R.id.movie_details_fragment) != null) {
+                //noinspection TryWithIdenticalCatches
+                try {
+                    Method method = clickFragmentClass.getDeclaredMethod("newInstance", String.class, String.class, boolean.class);
+                    FragmentBase fragment = (FragmentBase)method.invoke(null, id, title, false);
+                    parentActivity.getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.movie_details_fragment, fragment)
+                            .commit();
+                }
+                // these exception shouldn't happen because we are working off concrete implementations
+                catch (NoSuchMethodException ignored) { }
+                catch (IllegalAccessException ignored) { }
+                catch (InvocationTargetException ignored) { }
+            } else {
+                // open the required view
+                Intent i = new Intent(this.context, clickActivityClass)
+                        .putExtra(this.getIdIntentExtraString(), id)
+                        .putExtra(this.getTitleIntentExtraString(), title);
+                this.getContext().startActivity(i);
+            }
         }
     }
 
@@ -166,7 +185,12 @@ public abstract class DisplayItemListAdapter<T> extends RecyclerView.Adapter<Dis
      * Gets the {@link Class} of the {@link android.app.Activity} to launch on click
      * @return null if no activity should be launched, otherwise the activity class
      */
-    protected abstract Class getClickActivityClass();
+    protected abstract Class<? extends ActivityBase> getClickActivityClass();
+    /**
+     * Gets the {@link Class} of the {@link android.app.Activity} to launch on click
+     * @return null if no activity should be launched, otherwise the activity class
+     */
+    protected abstract Class<? extends FragmentBase> getClickFragmentClass();
     /**
      * Gets the unique string which identifies where the item id should be stored in the launched {@link Intent}
      * @return the unique string if required, null if {@link DisplayItemListAdapter#getClickActivityClass()) returns null

@@ -61,6 +61,7 @@ import butterknife.Bind;
 public class MovieDetailsFragment extends FragmentBase {
     public static final String KEY_MOVIE_ID = "movie-id";
     public static final String KEY_MOVIE_TITLE = "movie-title";
+    public static final String KEY_AS_ACTIVITY = "as-activity";
 
     private String movieId;
 
@@ -91,9 +92,13 @@ public class MovieDetailsFragment extends FragmentBase {
     }
 
     public static MovieDetailsFragment newInstance(String movieId, String movieTitle) {
+        return MovieDetailsFragment.newInstance(movieId, movieTitle, true);
+    }
+    public static MovieDetailsFragment newInstance(String movieId, String movieTitle, boolean asActivity) {
         Bundle args = new Bundle();
         args.putString(MovieDetailsFragment.KEY_MOVIE_ID, movieId);
         args.putString(MovieDetailsFragment.KEY_MOVIE_TITLE, movieTitle);
+        args.putBoolean(MovieDetailsFragment.KEY_AS_ACTIVITY, asActivity);
 
         MovieDetailsFragment fragment = new MovieDetailsFragment();
         fragment.setArguments(args);
@@ -104,25 +109,32 @@ public class MovieDetailsFragment extends FragmentBase {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View retView = super.onCreateView(R.layout.fragment_movie_details, inflater, container, savedInstanceState);
-
-        // offset the loading fragment so it appears below the expanded title bar
-        RelativeLayout.LayoutParams loadingUiWrapperLayoutParams = (RelativeLayout.LayoutParams) this.loadingUiWrapper.getLayoutParams();
-        loadingUiWrapperLayoutParams.topMargin = Utilities.getBackdropHeight();
-
-        Logger.logActionCreate("MainActivity");
-
-        // check the parent to see if we want a back button
-        this.parent.getToolbar().setVisibility(View.GONE);
-        if (this.parent.getToolbar().getNavigationIcon() != null) {
-            ToolbarOptions opts = new ToolbarOptions();
-            opts.enableUpButton = true;
-            ActivityInitialiser.setToolbarOptions(this.parent, this.toolbar, opts);
-        }
+        Logger.logActionCreate("Details Fragment");
 
         // get the basic items from the intent
         Bundle args = this.getArguments();
         this.movieId = args.getString(MovieDetailsFragment.KEY_MOVIE_ID);
         String movieTitle = args.getString(MovieDetailsFragment.KEY_MOVIE_TITLE);
+        boolean asActivity = args.getBoolean(MovieDetailsFragment.KEY_AS_ACTIVITY);
+
+        int toolbarHeight = Utilities.calculateBackdropHeight(Utilities.getScreenWidth());
+        if (!asActivity) {
+            toolbarHeight /= 2;
+        }
+
+        // offset the loading fragment so it appears below the expanded title bar
+        RelativeLayout.LayoutParams loadingUiWrapperLayoutParams = (RelativeLayout.LayoutParams) this.loadingUiWrapper.getLayoutParams();
+        loadingUiWrapperLayoutParams.topMargin = toolbarHeight;
+
+        // check the parent to see if we want a back button
+        if (asActivity) {
+            this.parent.getToolbar().setVisibility(View.GONE);
+        }
+        if (this.parent.getToolbar().getNavigationIcon() != null) {
+            ToolbarOptions opts = new ToolbarOptions();
+            opts.enableUpButton = true;
+            ActivityInitialiser.setToolbarOptions(this.parent, this.toolbar, opts);
+        }
 
         // create the review list fragment
         this.reviewsList = ReviewListFragment.newInstance(this.movieId);
@@ -159,12 +171,13 @@ public class MovieDetailsFragment extends FragmentBase {
         this.collapsingTitle.setBackground(toolbarBackground);
         this.toolbar.setBackground(null);
         this.collapsingTitle.setTitle(movieTitle);
+
         // ensure the title only gets as big as the required backdrop size
         ViewGroup.LayoutParams layout = this.collapsingTitle.getLayoutParams();
-        layout.height = Utilities.getBackdropHeight();
+        layout.height = toolbarHeight;
         this.collapsingTitle.setLayoutParams(layout);
         // ensure the scroll view starts at the required point in space
-        this.movieSummary.setPadding(this.movieSummary.getPaddingLeft(), layout.height, this.movieSummary.getPaddingRight(), this.movieSummary.getPaddingBottom());
+        this.movieSummary.setPadding(this.movieSummary.getPaddingLeft(), toolbarHeight, this.movieSummary.getPaddingRight(), this.movieSummary.getPaddingBottom());
         this.movieSummary.setClipToPadding(false); // this will allow the scroll view to draw *above* its padding limit (so it fills the gap between the title bar and the start of the padding)
 
         this.movieSummary.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -216,9 +229,12 @@ public class MovieDetailsFragment extends FragmentBase {
         MovieContract.getMovie(this.movieId, new ContractCallback<MovieWithReleases>() {
             @Override
             public void success(MovieWithReleases result) {
-                MovieDetailsFragment.this.setViewState(ViewState.SUCCESS);
+                // because the load is async, we have to make sure that we're still attached before setting view data
+                if (MovieDetailsFragment.this.isAdded()) {
+                    MovieDetailsFragment.this.setViewState(ViewState.SUCCESS);
 
-                MovieDetailsFragment.this.setMovie(result);
+                    MovieDetailsFragment.this.setMovie(result);
+                }
             }
 
             @Override

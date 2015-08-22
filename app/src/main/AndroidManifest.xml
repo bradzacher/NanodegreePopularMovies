@@ -32,8 +32,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="au.com.zacher.popularmovies.activity.MainActivity"
-            android:label="@string/main_activity_title"
-            android:screenOrientation="portrait">
+            android:label="@string/main_activity_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,8 +42,7 @@
         <activity
             android:name="au.com.zacher.popularmovies.activity.MovieDetailsActivity"
             android:label="@string/movie_details_activity_title"
-            android:parentActivityName="au.com.zacher.popularmovies.activity.MainActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName="au.com.zacher.popularmovies.activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="au.com.zacher.popularmovies.activity.MainActivity" />

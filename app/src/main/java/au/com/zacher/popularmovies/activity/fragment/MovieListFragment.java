@@ -62,10 +62,6 @@ public class MovieListFragment extends FragmentBase implements Spinner.OnItemSel
         super();
     }
 
-    public static MovieListFragment newInstance() {
-        return new MovieListFragment();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View retView = super.onCreateView(R.layout.fragment_movie_list, inflater, container, savedInstanceState);
@@ -78,10 +74,17 @@ public class MovieListFragment extends FragmentBase implements Spinner.OnItemSel
         // fetch the pieces of the view
         this.movieGridAdapter = new SimpleMovieListAdapter(this.parent, R.layout.fragment_single_movie_poster);
 
+        // figure out the number of cols we want
+        if (Utilities.isLandscape()) {
+            Utilities.setListColumnCount(3);
+        } else {
+            Utilities.setListColumnCount(2);
+        }
+
         // setup the display grid
         this.movieGrid.setHasFixedSize(false);
         this.movieGrid.setAdapter(this.movieGridAdapter);
-        this.movieGrid.setLayoutManager(new GridLayoutManager(this.parent, 2));
+        this.movieGrid.setLayoutManager(new GridLayoutManager(this.parent, Utilities.getListColumnCount()));
 
         // start the load
         this.configurationLoad();
@@ -121,29 +124,29 @@ public class MovieListFragment extends FragmentBase implements Spinner.OnItemSel
         this.noFavouritesText.setVisibility(View.GONE);
 
         if (!Utilities.getPreference(R.string.pref_discovery_sort_order, R.string.pref_default_discovery_sort_order).equals(this.getString(R.string.pref_label_discovery_sort_order_favourites))) {
-                    DiscoverMoviesContract.getDiscoverMovies(new ContractCallback<SimpleMovie[]>() {
+            DiscoverMoviesContract.getDiscoverMovies(new ContractCallback<SimpleMovie[]>() {
+                @Override
+                public void success(SimpleMovie[] movies) {
+                    // show the list and add the loaded items
+                    MovieListFragment.this.setViewState(ViewState.SUCCESS);
+                    MovieListFragment.this.movieGridAdapter.addAllItems(Arrays.asList(movies));
+
+                    MovieListFragment.this.initialLoadDone = true;
+                }
+
+                @Override
+                public void failure(Exception error) {
+                    // let the user know that we couldn't get any configuration (this should only ever happen if there is no internet connection on first load)
+                    MovieListFragment.this.setViewState(ViewState.ERROR);
+
+                    // and give them the option to retry
+                    MovieListFragment.this.loadRetryButton.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void success(SimpleMovie[] movies) {
-                            // show the list and add the loaded items
-                            MovieListFragment.this.setViewState(ViewState.SUCCESS);
-                            MovieListFragment.this.movieGridAdapter.addAllItems(Arrays.asList(movies));
-
-                            MovieListFragment.this.initialLoadDone = true;
+                        public void onClick(View v) {
+                            MovieListFragment.this.popularMoviesLoad();
                         }
-
-                        @Override
-                        public void failure(Exception error) {
-                            // let the user know that we couldn't get any configuration (this should only ever happen if there is no internet connection on first load)
-                            MovieListFragment.this.setViewState(ViewState.ERROR);
-
-                            // and give them the option to retry
-                            MovieListFragment.this.loadRetryButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    MovieListFragment.this.popularMoviesLoad();
-                                }
-                            });
-                        }
+                    });
+                }
             });
         } else {
             MovieListFragment.this.setViewState(ViewState.SUCCESS);

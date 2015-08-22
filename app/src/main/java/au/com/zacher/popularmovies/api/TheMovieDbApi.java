@@ -33,7 +33,7 @@ import retrofit.client.Response;
 public class TheMovieDbApi<T> {
     public static final String ENDPOINT = "http://api.themoviedb.org/3/";
 
-    public T service;
+    public final T service;
 
     public static Configuration configuration;
     static {

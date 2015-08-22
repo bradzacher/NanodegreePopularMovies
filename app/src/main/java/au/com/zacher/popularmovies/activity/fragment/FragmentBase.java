@@ -16,7 +16,7 @@
 
 package au.com.zacher.popularmovies.activity.fragment;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import au.com.zacher.popularmovies.R;
+import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.activity.ActivityBase;
 import au.com.zacher.popularmovies.activity.ViewState;
 import butterknife.Bind;
@@ -45,6 +46,8 @@ public abstract class FragmentBase extends Fragment {
     public View onCreateView(int layoutId, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.parent = (ActivityBase)super.getActivity();
         this.rootView = inflater.inflate(layoutId, container, false);
+
+        Utilities.recalculateImageSizesIfOrientationChanged();
 
         ButterKnife.bind(this, this.rootView);
 

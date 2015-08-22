@@ -62,22 +62,15 @@ public final class Utilities {
     public static String getBaseBackdropUrl() {
         return baseImageUrl + backdropSize;
     }
-    private static int posterHeight;
-    public static int getPosterHeight() {
-        return posterHeight;
+    private static int listColumnCount = 2;
+    public static void setListColumnCount(int value) {
+        Utilities.listColumnCount = value;
     }
-    private static int posterWidth;
-    public static int getPosterWidth() {
-        return posterWidth;
+    public static int getListColumnCount() {
+        return Utilities.listColumnCount;
     }
-    private static int backdropHeight;
-    public static int getBackdropHeight() {
-        return backdropHeight;
-    }
-    private static int backdropWidth;
-    public static int getBackdropWidth() {
-        return backdropWidth;
-    }
+
+    private static Configuration lastConfig;
 
     private static Context context;
     public static Context getApplicationContext() {
@@ -260,30 +253,53 @@ public final class Utilities {
     }
 
     /**
-     * Sets up the utilities based off of the given configuration
+     * Calculates the images sizes to be most efficient (effects image loads and displaying)
      */
-    public static void initFromConfig(Configuration configuration) {
+    public static void recalculateImageSizes() {
         // store the base image URL
-        baseImageUrl = configuration.images.base_url;
+        baseImageUrl = Utilities.lastConfig.images.base_url;
 
         // get the resolution width of the screen
-        Point p = new Point();
-        ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(p);
-        int screenWidth = p.x;
+        int screenWidth = Utilities.getScreenWidth();
 
         // look at the poster sizes and determine which is the most fitting for our screen
-        int desiredPosterWidth = screenWidth / 2;
-        posterSize = Utilities.getClosestWidth(configuration.images.poster_sizes, desiredPosterWidth);
-        // these are based off of the screen resolution
-        posterWidth = desiredPosterWidth;
-        posterHeight = (int)Math.ceil(((double)posterWidth) * 1.5);
+        int desiredPosterWidth = screenWidth / Utilities.listColumnCount;
+        posterSize = Utilities.getClosestWidth(Utilities.lastConfig.images.poster_sizes, desiredPosterWidth);
 
         // do the same for the backdrop sizes
         //noinspection UnnecessaryLocalVariable
         int desiredBackdropWidth = screenWidth;
-        backdropSize = Utilities.getClosestWidth(configuration.images.backdrop_sizes, desiredBackdropWidth);
-        backdropWidth = desiredBackdropWidth;
-        backdropHeight = (int)Math.ceil(((double)backdropWidth) / (16f / 9f));
+        backdropSize = Utilities.getClosestWidth(Utilities.lastConfig.images.backdrop_sizes, desiredBackdropWidth);
+    }
+
+    /**
+     * Grabs the screen's width
+     */
+    public static int getScreenWidth() {
+        Point p = new Point();
+        ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(p);
+        return p.x;
+    }
+    /**
+     * Calculates the poster height using the given width
+     */
+    public static int calculatePosterHeight(int width) {
+        return (int)Math.ceil(((double)width) * 1.5);
+    }
+    /**
+     * Calculates the backdrop height using the given width
+     */
+    public static int calculateBackdropHeight(int width) {
+        return (int)Math.ceil(((double)width) / (16f / 9f));
+    }
+
+    /**
+     * Sets up the utilities based off of the given configuration
+     */
+    public static void initFromConfig(Configuration configuration) {
+        Utilities.lastConfig = configuration;
+
+        Utilities.recalculateImageSizes();
     }
     private static String getClosestWidth(String[] widthStrs, int desiredWidth) {
         int[] widths = new int[widthStrs.length];
@@ -345,7 +361,7 @@ public final class Utilities {
     /**
      * The map of letters to the unicode regional indicator symbols
      */
-    private static HashMap<Character, char[]> regionalIndicatorSymbols = new HashMap<>(26);
+    private static final HashMap<Character, char[]> regionalIndicatorSymbols = new HashMap<>(26);
     static {
         int unicodeA = 127462;
         char charA = 'A';
@@ -394,5 +410,29 @@ public final class Utilities {
         sb.append(regionalIndicatorSymbols.get(countryCode.charAt(0)));
         sb.append(regionalIndicatorSymbols.get(countryCode.charAt(1)));
         return  sb.toString();
+    }
+
+    /**
+     * Checks if the phone is in landscape orientation
+     */
+    public static boolean isLandscape() {
+        return Utilities.context.getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    private static int lastOrientation = Integer.MIN_VALUE;
+    /**
+     * Will recalculate the required image sizes if the orientation has changed since the last recalculation
+     */
+    public static void recalculateImageSizesIfOrientationChanged() {
+        int currentOrientation = Utilities.context.getResources().getConfiguration().orientation;
+        if (Utilities.lastConfig == null && Utilities.lastOrientation == Integer.MIN_VALUE) {
+            Utilities.lastOrientation = currentOrientation;
+            return;
+        }
+
+        if (Utilities.lastOrientation != currentOrientation) {
+            Utilities.recalculateImageSizes();
+            Utilities.lastOrientation = currentOrientation;
+        }
     }
 }

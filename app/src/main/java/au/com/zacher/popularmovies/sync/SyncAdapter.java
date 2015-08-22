@@ -283,6 +283,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Logger.d(R.string.log_sync_end, type);
     }
     private static void LogApiError(RetrofitError error) {
-        Logger.e(R.string.log_api_error, error.getUrl(), error.getResponse().getStatus(), error.getMessage());
+        Response r = error.getResponse();
+        int err = 999;
+        if (r != null) {
+            err = r.getStatus();
+        }
+        Logger.e(R.string.log_api_error, error.getUrl(), err, error.getMessage());
     }
 }

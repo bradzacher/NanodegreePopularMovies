@@ -16,11 +16,16 @@
 
 package au.com.zacher.popularmovies.activity;
 
+import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 
 import au.com.zacher.popularmovies.Logger;
@@ -28,7 +33,6 @@ import au.com.zacher.popularmovies.R;
 import au.com.zacher.popularmovies.ToolbarOptions;
 import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.activity.fragment.MovieListFragment;
-
 
 public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClickListener {
     private MovieListFragment fragment;
@@ -39,7 +43,23 @@ public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClic
         options.enableUpButton = false;
         super.onCreate(savedInstanceState, options, R.layout.activity_main);
 
-        this.fragment = (MovieListFragment)this.getFragmentManager().findFragmentById(R.id.movie_list_fragment);
+        this.fragment = (MovieListFragment)this.getSupportFragmentManager().findFragmentById(R.id.movie_list_fragment);
+        FrameLayout detailsFragmentParent = (FrameLayout)this.findViewById(R.id.movie_details_fragment_parent);
+        FrameLayout listFragmentParent = (FrameLayout)this.findViewById(R.id.movie_list_fragment_parent);
+        if (this.findViewById(R.id.movie_details_fragment) != null) {
+            // resize the views for a 50-50 split
+            Point p = new Point();
+            ((WindowManager)this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(p);
+            int screenWidth = p.x;
+
+            ViewGroup.LayoutParams params = listFragmentParent.getLayoutParams();
+            params.width = screenWidth / 2;
+            listFragmentParent.setLayoutParams(params);
+
+            params = detailsFragmentParent.getLayoutParams();
+            params.width = screenWidth / 2;
+            detailsFragmentParent.setLayoutParams(params);
+        }
     }
 
     @Override
@@ -73,6 +93,7 @@ public class MainActivity extends ActivityBase implements Toolbar.OnMenuItemClic
 
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return this.onOptionsItemSelected(item);

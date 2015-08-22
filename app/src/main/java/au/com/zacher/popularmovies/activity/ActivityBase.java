@@ -17,12 +17,8 @@
 package au.com.zacher.popularmovies.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
 
 import au.com.zacher.popularmovies.ActivityInitialiser;
 import au.com.zacher.popularmovies.R;
@@ -64,6 +60,7 @@ public abstract class ActivityBase extends AppCompatActivity {
                 }
             });
         }
+        Utilities.recalculateImageSizesIfOrientationChanged();
 
         ActivityInitialiser.initActivity(options, savedInstanceState, this, layoutId);
 

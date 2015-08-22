@@ -42,7 +42,7 @@ public class MovieDetailsActivity extends ActivityBase {
 
         // create the fragment
         MovieDetailsFragment fragment = MovieDetailsFragment.newInstance(movieId, movieTitle);
-        this.getFragmentManager().beginTransaction()
+        this.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.movie_details_fragment, fragment)
                 .commit();
     }

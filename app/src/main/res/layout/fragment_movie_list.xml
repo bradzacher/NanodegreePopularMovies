@@ -16,10 +16,13 @@
   -->
 
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/movie_grid"
@@ -31,8 +34,8 @@
         android:id="@+id/no_favourites"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
+        android:layout_marginTop="16dp">
+
         <TextView
             android:layout_centerInParent="true"
             android:layout_width="wrap_content"
@@ -42,4 +45,4 @@
     </RelativeLayout>
 
     <include layout="@layout/fragment_loading_ui" />
-</RelativeLayout>
+</LinearLayout>

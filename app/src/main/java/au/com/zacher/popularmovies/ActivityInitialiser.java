@@ -67,9 +67,11 @@ public final class ActivityInitialiser {
         }
         toolbar = (Toolbar)activity.findViewById(R.id.toolbar);
         compatDelegate.setSupportActionBar(toolbar);
+
+        /*
         ActionBar actionbar = compatDelegate.getSupportActionBar();
 
-        /*if (activity instanceof Toolbar.OnMenuItemClickListener) {
+        if (activity instanceof Toolbar.OnMenuItemClickListener) {
             toolbar.setOnMenuItemClickListener((Toolbar.OnMenuItemClickListener)activity);
         }
         if (activity instanceof Toolbar.OnClickListener) {

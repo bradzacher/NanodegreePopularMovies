@@ -15,15 +15,16 @@
   ~ limitations under the License.
   -->
 
-<FrameLayout
+<!-- this is just a placeholder for the fragment, which needs to be created dynamically -->
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!-- this is just a placeholder for the fragment, which needs to be created dynamically -->
+
+    <include layout="@layout/toolbar" />
+
     <FrameLayout
         android:id="@+id/movie_details_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-    <include layout="@layout/toolbar" />
-</FrameLayout>
+</RelativeLayout>

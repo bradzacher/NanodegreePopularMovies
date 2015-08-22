@@ -67,7 +67,7 @@ public class DbColumn {
      * Creates the db column.
      * @param name the name of the column
      * @param type the type of the column
-     * @param defaultValue the defualt value of the column - note that the caller is responsible for correct stringification of the default value
+     * @param defaultValue the default value of the column - note that the caller is responsible for correct stringification of the default value
      */
     @SuppressWarnings("unused")
     public DbColumn(String name, ColumnType type, String defaultValue) {
@@ -80,7 +80,7 @@ public class DbColumn {
      * @param type the type of the column
      * @param isPrimaryKey true if this column is PK, false otherwise
      * @param isNullAllowed true if null is allowed, false otherwise
-     * @param defaultValue the defualt value of the column - note that the caller is responsible for correct stringification of the default value
+     * @param defaultValue the default value of the column - note that the caller is responsible for correct stringification of the default value
      */
     public DbColumn(String name, ColumnType type, boolean isPrimaryKey, boolean isNullAllowed, String defaultValue) {
         this.name = name;

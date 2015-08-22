@@ -18,9 +18,7 @@ package au.com.zacher.popularmovies.adapter;
 
 import android.content.Context;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
-import au.com.zacher.popularmovies.Utilities;
 import au.com.zacher.popularmovies.activity.MovieDetailsActivity;
 import au.com.zacher.popularmovies.activity.fragment.MovieDetailsFragment;
 import au.com.zacher.popularmovies.model.DisplayItemViewHolder;
@@ -55,8 +53,13 @@ public class SimpleMovieListAdapter extends DisplayItemListAdapter<SimpleMovie> 
     }
 
     @Override
-    protected Class getClickActivityClass() {
+    protected Class<MovieDetailsActivity> getClickActivityClass() {
         return MovieDetailsActivity.class;
+    }
+
+    @Override
+    protected Class<MovieDetailsFragment> getClickFragmentClass() {
+        return MovieDetailsFragment.class;
     }
 
     @Override
@@ -67,13 +70,5 @@ public class SimpleMovieListAdapter extends DisplayItemListAdapter<SimpleMovie> 
     @Override
     protected String getTitleIntentExtraString() {
         return MovieDetailsFragment.KEY_MOVIE_TITLE;
-    }
-
-    @Override
-    public DisplayItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        DisplayItemViewHolder view = super.onCreateViewHolder(parent, viewType);
-        // enforce the correct size for the screen
-        view.itemView.setLayoutParams(new RelativeLayout.LayoutParams(Utilities.getPosterWidth(), Utilities.getPosterHeight()));
-        return view;
     }
 }

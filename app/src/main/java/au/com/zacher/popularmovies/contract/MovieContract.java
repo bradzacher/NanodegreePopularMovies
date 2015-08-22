@@ -89,7 +89,6 @@ public final class MovieContract {
         if (cursor == null || cursor.getCount() == 0) {
             callback.failure(new Exception("No data in provider"));
             provider.close();
-            cursor.close();
             return;
         }
         cursor.moveToFirst();
