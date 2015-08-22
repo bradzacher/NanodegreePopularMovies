@@ -92,6 +92,7 @@ public class FavouriteHelper extends DbHelper {
         // delete the old value
         Cursor cur = db.query(FavouriteEntry.TABLE_NAME, new String[] { FavouriteEntry.COLUMN_ITEM_ID.name }, FavouriteEntry.COLUMN_ITEM_ID.name + " = ?", new String[] { id }, null, null, null, "1");
         boolean res = cur.moveToFirst();
+        db.close();
         cur.close();
         return res;
     }
@@ -117,6 +118,7 @@ public class FavouriteHelper extends DbHelper {
             } while (cur.moveToNext());
         }
 
+        db.close();
         cur.close();
         return res;
     }

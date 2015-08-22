@@ -109,7 +109,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                         SyncAdapter.LogSyncEnd(finalStringType);
 
                         ApiResultCacheHelper db = new ApiResultCacheHelper();
+
                         db.add(ConfigurationContract.TYPE, configuration);
+
+                        db.close();
 
                         if (callback != null) {
                             callback.success(true);
@@ -147,10 +150,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     public void success(PagedResults<SimpleMovie> simpleMoviePagedResults, Response response) {
                         SyncAdapter.LogSyncEnd(finalStringType);
 
-                        ApiResultCacheHelper db = new ApiResultCacheHelper();
                         String type = (isMostPopular) ? DiscoverMoviesContract.DISCOVER_MOVIES_MOST_POPULAR_TYPE : DiscoverMoviesContract.DISCOVER_MOVIES_HIGHEST_RATED_TYPE;
 
+                        ApiResultCacheHelper db = new ApiResultCacheHelper();
+
                         db.add(type, simpleMoviePagedResults.results);
+
+                        db.close();
 
                         if (callback != null) {
                             callback.success(true);
@@ -178,11 +184,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     @Override
                     public void success(MovieWithReleases movie, Response response) {
                         SyncAdapter.LogSyncEnd(finalStringType);
-
-                        ApiResultCacheHelper db = new ApiResultCacheHelper();
                         String type = MovieContract.MOVIES_DB_TYPE + "_" + id;
 
+                        ApiResultCacheHelper db = new ApiResultCacheHelper();
+
                         db.add(type, movie);
+
+                        db.close();
 
                         if (callback != null) {
                             callback.success(true);
@@ -210,11 +218,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     @Override
                     public void success(RelatedPagedResults<Review> reviewRelatedPagedResults, Response response) {
                         SyncAdapter.LogSyncEnd(finalStringType);
-
-                        ApiResultCacheHelper db = new ApiResultCacheHelper();
                         String type = MovieContract.REVIEWS_DB_TYPE + "_" + id;
 
+                        ApiResultCacheHelper db = new ApiResultCacheHelper();
+
                         db.add(type, reviewRelatedPagedResults.results);
+
+                        db.close();
 
                         if (callback != null) {
                             callback.success(true);
@@ -242,11 +252,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     @Override
                     public void success(RelatedResults<MovieVideo> videoRelatedPagedResults, Response response) {
                         SyncAdapter.LogSyncEnd(finalStringType);
-
-                        ApiResultCacheHelper db = new ApiResultCacheHelper();
                         String type = MovieContract.VIDEOS_DB_TYPE + "_" + id;
 
+                        ApiResultCacheHelper db = new ApiResultCacheHelper();
+
                         db.add(type, videoRelatedPagedResults.results);
+
+                        db.close();
 
                         if (callback != null) {
                             callback.success(true);

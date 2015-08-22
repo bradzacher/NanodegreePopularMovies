@@ -124,10 +124,12 @@ public class TestDb extends AndroidTestCase {
             // get the item
             Cursor cursor = db.get(key);
             DisplayItem fromDb = this.getItem(cursor);
+            cursor.close();
 
             // compare
             assertTrue(fromDb.equals(item));
         }
+        db.close();
     }
 
     private DisplayItem getItem(Cursor cursor) {

@@ -88,6 +88,8 @@ public final class MovieContract {
 
         if (cursor == null || cursor.getCount() == 0) {
             callback.failure(new Exception("No data in provider"));
+            provider.close();
+            cursor.close();
             return;
         }
         cursor.moveToFirst();
@@ -100,6 +102,7 @@ public final class MovieContract {
         } else {
             callback.failure(new Exception("Data too old"));
         }
+        provider.close();
         cursor.close();
     }
 }

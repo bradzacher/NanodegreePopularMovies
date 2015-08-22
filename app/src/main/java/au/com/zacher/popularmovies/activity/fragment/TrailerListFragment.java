@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -66,8 +67,21 @@ public class TrailerListFragment extends DetailsSubListFragment {
                 if (result.length != 0) {
                     LayoutInflater inflater = LayoutInflater.from(TrailerListFragment.this.parent);
                     for (final MovieVideo video : result) {
+                        final String videoUrl = "http://www.youtube.com/watch?v=" + video.key;
+
                         View v = inflater.inflate(R.layout.fragment_single_trailer, TrailerListFragment.this.trailerList, false);
                         ((TextView) v.findViewById(R.id.display_item_title)).setText(video.name);
+                        v.findViewById(R.id.trailer_share_button).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i = new Intent(Intent.ACTION_SEND);
+                                i.setType("text/plain");
+                                i.putExtra(Intent.EXTRA_TEXT, videoUrl);
+                                // create a share chooser so that
+                                TrailerListFragment.this.startActivity(Intent.createChooser(i, TrailerListFragment.this.getString(R.string.generic_share)));
+                            }
+                        });
+
                         TrailerListFragment.this.trailerList.addView(v);
 
                         // when the user taps - open the video
@@ -75,7 +89,7 @@ public class TrailerListFragment extends DetailsSubListFragment {
                             @Override
                             public void onClick(View v) {
                                 TrailerListFragment.this.startActivity(new Intent(Intent.ACTION_VIEW,
-                                        Uri.parse("http://www.youtube.com/watch?v=" + video.key)));
+                                        Uri.parse(videoUrl)));
                             }
                         });
                     }

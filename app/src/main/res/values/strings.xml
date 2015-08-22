@@ -18,6 +18,7 @@
     <string name="app_name">PopularMovies</string>
 
     <string name="action_settings">Settings</string>
+    <string name="generic_share">Share trailer to...</string>
 
     <!-- Main Activity String -->
     <string name="main_activity_title">Popular Movies</string>

@@ -21,24 +21,38 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:paddingLeft="8dp"
-    android:paddingTop="8dp">
+    android:padding="8dp">
     <ImageView
-        android:id="@+id/single_trailer_play_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/trailer_play_image"
         android:src="@drawable/ic_play_arrow_black_24dp"
         android:contentDescription="@string/movie_details_activity_trailers_play"/>
 
+    <ImageButton
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/trailer_share_button"
+        android:src="@drawable/ic_share_black_24dp"
+        android:contentDescription="@string/generic_share"
+        android:background="?attr/selectableItemBackground" />
+
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/trailer_play_image"
+        android:layout_toLeftOf="@id/trailer_share_button"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:layout_gravity="center_vertical"
         android:id="@id/display_item_title"
         style="@style/TrailerTitle"
-        android:background="@android:color/transparent"
-        android:layout_marginLeft="8dp"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/single_trailer_play_image"
-        tools:text="@string/main_activity_item_placeholder" />
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="TEST REALLY LONG TEXT TEST REALLY LONG TEXT TEST REALLY LONG TEXT" />
 </RelativeLayout>
